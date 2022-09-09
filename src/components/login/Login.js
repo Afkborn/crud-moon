@@ -24,7 +24,6 @@ class Login extends Component {
   login = () => {
     this.props.actions.getUser(this.state.username, this.state.password);
     this.props.actions.showSpinner();
-    //BURADA KALDIM GİRİŞ YAPILDI İSE ANA SAYFAYA YÖNLENDİR
   };
 
 
@@ -32,10 +31,12 @@ class Login extends Component {
     let name = event.target.name;
     let value = event.target.value;
     this.setState({ [name]: value });
+
   };
 
 
   loginCol() {
+
     return (
       <Form className="form">
         <FormGroup>
@@ -73,6 +74,10 @@ class Login extends Component {
   }
 
   render() {
+    //fix redirect error
+    if (this.props.user._id !== undefined) {
+      this.props.history.push("/");
+    }
     return (
       <Container fluid className="mt-4">
         <Row>

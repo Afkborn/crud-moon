@@ -1,5 +1,6 @@
 const initialState = {
   user: {},
-  spinnerStatus : false
+  spinnerStatus : false,
+  redirect: false,
 };
 export default initialState;

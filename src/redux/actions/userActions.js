@@ -16,6 +16,6 @@ export function getUser(username, password) {
         return fetch(endpoint)
         .then((response) => response.json())
         .then((result) => dispatch(getUserSuccess(result)))
-        .then(() => dispatch(spinnerActions.hideSpinner()));
+        .then(() => dispatch(spinnerActions.hideSpinner()))
     };
     }
