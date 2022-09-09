@@ -1,0 +1,91 @@
+.link, .link:hover{
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+}
+
+.link-black{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.link-black:hover{
+    color: rgb(189, 31, 31);
+    text-decoration: none;
+}
+
+
+.brand{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: 800;
+    display: 'flex';
+    justify-content: 'center';
+}
+
+
+.menu-line{
+    font-size: 2em;
+    font-weight: 600;
+    position: absolute;
+    transform: rotate(270deg);
+}
+
+.menu-item{
+    cursor: pointer;
+}
+
+.menu-item-text{
+    font-size: 1.5em;
+    font-weight: 600;
+    display: 'flex';
+    justify-content: 'center';
+    line-height: 60px;
+}
+.menu-item-text:hover{
+    color: rgb(189, 31, 31);
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    color: rgb(189, 31, 31);
+    background-color: rgb(245, 237, 237);
+}
+
+
+.td-menu-item{
+    width: 100%;
+    height: 100%;
+    display: 'flex';
+    justify-content: 'center';
+    align-items: 'center';
+}
+
+
+.menu-divide:hover{
+    text-decoration: none;
+}
+
+
+.notfound-text{
+    font-size: 5em;
+    font-weight: 800;
+    display: 'flex';
+    justify-content: 'center';
+    line-height: 100px;
+}
+
+.notfound-link{
+    color: rgb(0, 0, 0);
+    font-size: 2em;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.notfound-link:hover{
+    color: rgb(189, 31, 31);
+    text-decoration: none;
+}
