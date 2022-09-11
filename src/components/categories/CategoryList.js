@@ -1,36 +1,52 @@
 import React, { useEffect } from "react";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { Button, ListGroup, ListGroupItem } from "reactstrap";
 import { Badge } from "reactstrap";
 import { getCategories } from "../../redux/actions/categoryActions";
 import { changeCategory } from "../../redux/actions/categoryActions";
 import { connect } from "react-redux";
 
-function CategoryList({ categories, getCategories, changeCategory, currentCategory, history, ...props }) {
+import { getProducts } from "../../redux/actions/productActions";
+
+function CategoryList({
+  categories,
+  getCategories,
+  changeCategory,
+  currentCategory,
+  history,
+  getProducts,
+  ...props
+}) {
   useEffect(() => {
     getCategories();
+    getProducts();
   }, []);
 
-  function selectCategory (category) {
+  function selectCategory(category) {
     changeCategory(category);
-  };
+    getProducts(category._id);
+  }
 
   return (
     <div>
-      <h2>
-        <Badge color="info">Categories</Badge>{" "}
+      <h2 className="text-center">
+        <Badge color="info">Kategori</Badge>{" "}
+        <Badge color="secondary">{categories.length}</Badge>
       </h2>
-      <ListGroup>
 
+      <ListGroup>
         {categories.map((category) => (
           <ListGroupItem
             active={category._id === currentCategory._id}
             onClick={() => selectCategory(category)}
             key={category._id}
-          > 
+          >
             {category.name}
           </ListGroupItem>
         ))}
       </ListGroup>
+      <h2>
+        <Button color="success">Kategori Ekle</Button>
+      </h2>
     </div>
   );
 }
@@ -44,6 +60,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   getCategories,
   changeCategory,
+  getProducts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoryList);
