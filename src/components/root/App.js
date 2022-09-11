@@ -24,6 +24,7 @@ class App extends Component {
           <ProtectedRoutes path="/profile" component={Profile} />
           <Route path="/logout" component={Logout} />
           <ProtectedRoutes path="/category/:id" component={Category} />
+          <ProtectedRoutes path="/category" component={Category} />
           <Route component={NotFound} />
         </Switch>
       </Container>

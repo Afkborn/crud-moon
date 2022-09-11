@@ -20,12 +20,14 @@ function CategoryList({
   useEffect(() => {
     getCategories();
     getProducts();
-  }, []);
+  }, [getCategories,getProducts ]); // fıx warning 
 
   function selectCategory(category) {
     changeCategory(category);
     getProducts(category._id);
   }
+
+  
 
   return (
     <div>
@@ -43,20 +45,18 @@ function CategoryList({
           >
             <span>{category.name}</span>
             <Link to={"/category/" + category._id}>
-            <img
-              src="edit.svg"
-              style={{ height: 25, width: 25 }} // loc end item
-              alt="edit"
-              
-              className="link-black to-right "
-            />
+              <img
+                src="edit.svg"
+                style={{ height: 25, width: 25 }} // loc end item
+                alt="edit"
+                className="link-black to-right "
+              />
             </Link>
-
           </ListGroupItem>
         ))}
       </ListGroup>
       <Button className="secondary mt-3 text-center">
-        <Link className="link-black" to={"/category"}>
+        <Link className="link-black" to="/category">
           Kategori ekle
         </Link>
       </Button>

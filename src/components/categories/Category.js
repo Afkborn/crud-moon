@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { saveCategory } from "../../redux/actions/categoryActions";
 import {
   Row,
   Col,
@@ -11,14 +12,29 @@ import {
   FormText,
   Badge,
 } from "reactstrap";
-import { getCategories } from "../../redux/actions/categoryActions";
 
-function Category({ category, categories, history, ...props }) {
-  useEffect(() => {
-    if (categories.length === 0) {
-      getCategories();
-    }
-  }, []);
+function Category({ saveCategory, history, ...props }) {
+  const [category, setCategory] = useState({ ...props.category });
+
+  // useEffect(() => {
+  //   setCategory({ ...props.category });
+  // }, [props.category]);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log(category)
+    saveCategory(category).then(() => {
+      history.push("/");
+    });
+  }
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setCategory((prevCategory) => ({
+      ...prevCategory,
+      [name]: value,
+    }));
+  }
 
   return (
     <div className="mt-4">
@@ -29,12 +45,12 @@ function Category({ category, categories, history, ...props }) {
             <h1 className="text-center ">
               <Badge color="success">
                 {" "}
-                {category.name ? category.name : "Ekle"}
+                {category.name !== undefined ? "Güncelle" : "Ekle"}
               </Badge>
             </h1>
           </div>
 
-          <Form className="form">
+          <Form className="form" onSubmit={handleSubmit}>
             <FormGroup>
               <Label for="name">Kategori İsmi</Label>
               <Input
@@ -42,17 +58,17 @@ function Category({ category, categories, history, ...props }) {
                 name="name"
                 id="name"
                 value={category.name}
-                placeholder="Kategori İsmi"
+                onChange={handleChange}
               />
             </FormGroup>
             <FormGroup>
-              <Label for="seuUrl">SEO Url</Label>
+              <Label for="seoUrl">SEO Url</Label>
               <Input
                 type="text"
-                name="seuUrl"
-                id="seuUrl"
+                name="seoUrl"
+                id="seoUrl"
                 value={category.seoUrl}
-                placeholder="SEO Url"
+                onChange={handleChange}
               />
             </FormGroup>
             {category.img ? (
@@ -69,12 +85,23 @@ function Category({ category, categories, history, ...props }) {
               </FormGroup>
             ) : null}
             <FormGroup>
+              <Label for="img">Image URL</Label>
+              <Input
+                type="text"
+                name="img"
+                id="img"
+                value={category.img}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            {/* <FormGroup>
               <Label for="imageFile">File</Label>
               <Input type="file" name="file" id="imageFile" />
               <FormText color="muted">Kategoriye ait resim seçiniz.</FormText>
-            </FormGroup>
-            <Button color="warning">
-              {category.name ? "Güncelle" : "Ekle"}
+            </FormGroup> */}
+
+            <Button type="submit" color="warning">
+              {category.name !== undefined ? "Güncelle" : "Ekle"}
             </Button>
           </Form>
         </Col>
@@ -94,7 +121,6 @@ function mapStateToProps(state, ownProps) {
     categoryId && state.categoryListReducer.length > 0
       ? getCategoryById(state.categoryListReducer, categoryId)
       : {};
-
   return {
     category,
     categories: state.categoryListReducer,
@@ -102,7 +128,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const mapDispatchToProps = {
-  getCategories,
+  saveCategory,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);
