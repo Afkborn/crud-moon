@@ -1,6 +1,7 @@
-//userActions
-export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
 
+//categoryActions
+export const GET_CATEGORIES_SUCCESS = "GET_CATEGORIES_SUCCESS";
+export const CHANGE_CATEGORY = "CHANGE_CATEGORY";
 
 
 //spinnerActions

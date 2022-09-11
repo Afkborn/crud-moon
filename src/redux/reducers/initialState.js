@@ -1,6 +1,6 @@
 const initialState = {
-  user: {},
   spinnerStatus : false,
-  redirect: false,
+  categories : [],
+  currentCategory : {},
 };
 export default initialState;
