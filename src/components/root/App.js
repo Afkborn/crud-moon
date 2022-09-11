@@ -6,23 +6,24 @@ import Navi from "../navi/Navi";
 import Login from "../login/Login";
 import Register from "../register/Register";
 import "../../styles/App.css";
-import { bindActionCreators } from "redux";
+import Logout from "../login/Logout";
 import { connect } from "react-redux";
 import Profile from "../profile/Profile";
 import NotFound from "../common/NotFound";
+import ProtectedRoutes from "../common/ProtectedRoutes";
+
 class App extends Component {
   render() {
     return (
       <Container>
         <Navi user={this.props.user} />
         <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/home" exact component={Home} />
+          <ProtectedRoutes path="/" exact component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/profile" component={Profile} />
+          <ProtectedRoutes path="/profile" component={Profile} />
+          <Route path="/logout" component={Logout} />
           <Route component={NotFound} />
-          
         </Switch>
       </Container>
     );

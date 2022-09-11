@@ -1,8 +1,4 @@
-import React, { Component } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import * as userActions from "../../redux/actions/userActions";
-import * as spinnerActions from "../../redux/actions/spinnerActions";
+import React, { useState } from "react";
 
 import {
   Button,
@@ -14,97 +10,80 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import SpinnerCustom from "../common/SpinnerCustom";
-class Login extends Component {
-  state = {
-    username: "",
-    password: "",
-  };
+import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
-  login = () => {
-    this.props.actions.getUser(this.state.username, this.state.password);
-    this.props.actions.showSpinner();
-  };
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState(false);
 
-
-  onChangeHandler = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-    this.setState({ [name]: value });
-
-  };
-
-
-  loginCol() {
-
-    return (
-      <Form className="form">
-        <FormGroup>
-          <Label for="username">Username</Label>
-          <Input
-            type="text"
-            name="username"
-            id="username"
-            onChange={this.onChangeHandler}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="pwd">Password</Label>
-          <Input
-            type="password"
-            name="password"
-            id="pwd"
-            onChange={this.onChangeHandler}
-          />
-        </FormGroup>
-        <Button onClick={() => this.login()} color="success">
-          Login
-        </Button>
-        {this.props.user.message && <p>{this.props.user.message}</p>}
-      </Form>
-    );
-  }
-
-  checkLoading() {
-    if (this.props.spinnerStatus) {
-      return <SpinnerCustom />;
-    } else {
-      return this.loginCol();
-    }
-  }
-
-  render() {
-    //fix redirect error
-    if (this.props.user._id !== undefined) {
-      this.props.history.push("/");
-    }
-    return (
-      <Container fluid className="mt-4">
-        <Row>
-          <Col xs="3"></Col>
-          <Col xs="6">{this.checkLoading()}</Col>
-          <Col xs="3"></Col>
-        </Row>
-      </Container>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    user: state.userReducer,
-    spinnerStatus: state.spinnerReducer,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {
-      getUser: bindActionCreators(userActions.getUser, dispatch),
-      showSpinner: bindActionCreators(spinnerActions.showSpinner, dispatch),
-      hideSpinner: bindActionCreators(spinnerActions.hideSpinner, dispatch),
+  const configuration = {
+    method: "post",
+    url: "https://moon-backend.afkborn.keenetic.pro/users/login",
+    data: {
+      email,
+      password,
     },
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios(configuration)
+      .then((result) => {        setLogin(true);
+        cookies.set("TOKEN", result.data.token, {
+          path: "/",
+        });
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        error = new Error();
+      });
+  };
+
+  return (
+    <Container fluid className="mt-4" onSubmit={(e) => handleSubmit(e)}>
+      <Row>
+        <Col xs="3"></Col>
+        <Col xs="6">
+          <Form className="form">
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="pwd">Password</Label>
+              <Input
+                type="password"
+                name="password"
+                id="pwd"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormGroup>
+            <Button
+              onSubmit={(e) => handleSubmit(e)}
+              type="submit"
+              color="success"
+            >
+              Login
+            </Button>
+            {login ? (
+              <p className="text-success">You Are Logged in Successfully</p>
+            ) : null}
+          </Form>
+        </Col>
+        <Col xs="3"></Col>
+      </Row>
+    </Container>
+  );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

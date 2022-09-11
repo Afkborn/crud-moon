@@ -2,19 +2,23 @@ import React, { Component } from "react";
 import { Nav, Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
 
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+const token = cookies.get("TOKEN");
+
 export default class Navi extends Component {
-  componentDidMount() {
-    console.log(this.props.user._id);
-  }
   renderProfile = () => {
     return (
       <Row>
         <Col md="6" sm="2" lg="8"></Col>
         <Col xs="5" sm="4" md="3" lg="2">
+        <Link to="/profile" className="link-black">
+            Profile
+          </Link>
         </Col>
         <Col xs="5" sm="4" md="3" lg="2">
-          <Link to="/profile" className="link-black">
-            Profile
+          <Link to="/logout" className="link-black">
+            Logout
           </Link>
         </Col>
       </Row>
@@ -51,7 +55,7 @@ export default class Navi extends Component {
             </Link>
           </Col>
           <Col xs="3">
-            {this.props.user._id==undefined ? this.renderBasic() : this.renderProfile()}
+            {token ? this.renderProfile() : this.renderBasic()}
           </Col>
         </Row>
       </Container>
