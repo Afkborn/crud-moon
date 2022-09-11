@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { saveCategory } from "../../redux/actions/categoryActions";
 import {
@@ -9,20 +9,17 @@ import {
   Label,
   Input,
   Button,
-  FormText,
+  // FormText,
   Badge,
 } from "reactstrap";
 
 function Category({ saveCategory, history, ...props }) {
   const [category, setCategory] = useState({ ...props.category });
-
-  // useEffect(() => {
-  //   setCategory({ ...props.category });
-  // }, [props.category]);
+  // fıx WARNING A COMPONENT IS CHANING AN UNCONTROLLED INPUT TO BE CONTROLLED
+  // kategori ekleye basılıp değer girildiğidne güncelle oluyor onu çöz 
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(category)
     saveCategory(category).then(() => {
       history.push("/");
     });

@@ -61,8 +61,7 @@ export function saveCategoryAPI(category) {
     configuration.method = "put";
     configuration.url = `https://moon-backend.afkborn.keenetic.pro/categories/${category._id}`;
   }
-  console.log(configuration);
-  return axios(configuration).then(response => console.log(response)).catch(error => console.log(error));
+  return axios(configuration);
 }
 
 
@@ -71,10 +70,9 @@ export function saveCategory(category) {
   return function (dispatch) {
     return saveCategoryAPI(category)
       .then((savedCategory) => {
-        dispatch(createCategorySuccess(savedCategory));
+        category._id ? dispatch(updateCategorySuccess(savedCategory)) : dispatch(createCategorySuccess(savedCategory)); 
       })
       .catch((error) => {
-        console.log(`Error In saveCategory: ${error}`);
         throw error;
       });
   };
