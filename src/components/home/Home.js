@@ -5,15 +5,15 @@ import ProductList from "../products/ProductList";
 function Home() {
   return (
     <div>
-    <Row>
-      <Col xs="3">
-        <CategoryList></CategoryList>
-      </Col>
-      <Col xs="9">
-        <ProductList></ProductList>
-      </Col>
-    </Row>
-  </div>
+      <Row>
+        <Col xs="3">
+          <CategoryList></CategoryList>
+        </Col>
+        <Col xs="9">
+          <ProductList></ProductList>
+        </Col>
+      </Row>
+    </div>
   );
 }
 

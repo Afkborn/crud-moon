@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import Profile from "../profile/Profile";
 import NotFound from "../common/NotFound";
 import ProtectedRoutes from "../common/ProtectedRoutes";
-
+import Category from "../categories/Category";
 class App extends Component {
   render() {
     return (
@@ -23,6 +23,7 @@ class App extends Component {
           <Route path="/register" component={Register} />
           <ProtectedRoutes path="/profile" component={Profile} />
           <Route path="/logout" component={Logout} />
+          <ProtectedRoutes path="/category/:id" component={Category} />
           <Route component={NotFound} />
         </Switch>
       </Container>

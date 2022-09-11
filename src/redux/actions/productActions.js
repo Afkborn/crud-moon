@@ -16,7 +16,6 @@ export function getProducts(categoryId) {
   };
 
   if (categoryId == null) {
-    console.log("categoryId is null");
     delete configuration.params;
   }
 

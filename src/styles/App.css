@@ -89,3 +89,8 @@
     color: rgb(189, 31, 31);
     text-decoration: none;
 }
+
+.to-right{
+    position: absolute;
+    right: 10px;
+}

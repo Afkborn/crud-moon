@@ -1,15 +1,9 @@
-import React, { useEffect } from "react";
-import { Badge, Table, Button } from "reactstrap";
+import React from "react";
+import { Badge, Table } from "reactstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 function ProductList({ currentCategory, products, history, ...props }) {
-
-
-
-  function editProduct(product) {
-    console.log("edit product");
-  }
 
   function renderProduct(product) {
     return (

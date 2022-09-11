@@ -6,6 +6,7 @@ import { changeCategory } from "../../redux/actions/categoryActions";
 import { connect } from "react-redux";
 
 import { getProducts } from "../../redux/actions/productActions";
+import { Link } from "react-router-dom";
 
 function CategoryList({
   categories,
@@ -40,13 +41,25 @@ function CategoryList({
             onClick={() => selectCategory(category)}
             key={category._id}
           >
-            {category.name}
+            <span>{category.name}</span>
+            <Link to={"/category/" + category._id}>
+            <img
+              src="edit.svg"
+              style={{ height: 25, width: 25 }} // loc end item
+              alt="edit"
+              
+              className="link-black to-right "
+            />
+            </Link>
+
           </ListGroupItem>
         ))}
       </ListGroup>
-      <h2>
-        <Button color="success">Kategori Ekle</Button>
-      </h2>
+      <Button className="secondary mt-3 text-center">
+        <Link className="link-black" to={"/category"}>
+          Kategori ekle
+        </Link>
+      </Button>
     </div>
   );
 }
