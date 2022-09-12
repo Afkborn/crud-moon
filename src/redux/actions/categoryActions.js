@@ -4,8 +4,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-
-
 export function changeCategory(category) {
   return { type: actionTypes.CHANGE_CATEGORY, payload: category };
 }
@@ -31,6 +29,13 @@ export function updateCategorySuccess(category) {
   };
 }
 
+export function deleteCategorySuccess(category) {
+  return {
+    type: actionTypes.DELETE_CATEGORY_SUCCESS,
+    payload: category,
+  };
+}
+
 export function getCategories() {
   const configuration = {
     method: "get",
@@ -47,30 +52,29 @@ export function getCategories() {
   };
 }
 
-
 export function saveCategoryAPI(category) {
   const configuration = {
     method: "post",
     url: "https://moon-backend.afkborn.keenetic.pro/categories",
     data: category,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   };
-  if (category._id){
+  if (category._id) {
     configuration.method = "put";
     configuration.url = `https://moon-backend.afkborn.keenetic.pro/categories/${category._id}`;
   }
   return axios(configuration);
 }
 
-
-
 export function saveCategory(category) {
   return function (dispatch) {
     return saveCategoryAPI(category)
       .then((savedCategory) => {
-        category._id ? dispatch(updateCategorySuccess(savedCategory)) : dispatch(createCategorySuccess(savedCategory)); 
+        category._id
+          ? dispatch(updateCategorySuccess(savedCategory))
+          : dispatch(createCategorySuccess(savedCategory));
       })
       .catch((error) => {
         throw error;
@@ -78,3 +82,25 @@ export function saveCategory(category) {
   };
 }
 
+export function deleteCategoryAPI(category) {
+  const configuration = {
+    method: "delete",
+    url: `https://moon-backend.afkborn.keenetic.pro/categories/${category._id}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return axios(configuration);
+}
+
+export function deleteCategory(category) {
+  return function (dispatch) {
+    return deleteCategoryAPI(category)
+      .then((deletedCategory) => {
+        dispatch(deleteCategorySuccess(deletedCategory));
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
+}

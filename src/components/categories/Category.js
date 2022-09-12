@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { saveCategory } from "../../redux/actions/categoryActions";
+import {
+  saveCategory,
+  deleteCategory,
+} from "../../redux/actions/categoryActions";
 import {
   Row,
   Col,
@@ -11,18 +14,27 @@ import {
   Button,
   // FormText,
   Badge,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+
 } from "reactstrap";
 
-function Category({ saveCategory, history, ...props }) {
+function Category({ saveCategory, deleteCategory, history, ...props }) {
   const [category, setCategory] = useState({ ...props.category });
+  const [modal, setModal] = useState(false);
+
   // fıx WARNING A COMPONENT IS CHANING AN UNCONTROLLED INPUT TO BE CONTROLLED
-  // kategori ekleye basılıp değer girildiğidne güncelle oluyor onu çöz 
 
   function handleSubmit(event) {
     event.preventDefault();
     saveCategory(category).then(() => {
       history.push("/");
     });
+  }
+  function toggle() {
+    setModal(!modal);
   }
 
   function handleChange(event) {
@@ -32,6 +44,13 @@ function Category({ saveCategory, history, ...props }) {
       [name]: value,
     }));
   }
+  function handleDelete() {
+    deleteCategory(category).then(() => {
+      history.push("/");
+    });
+    toggle()
+  }
+
 
   return (
     <div className="mt-4">
@@ -42,7 +61,7 @@ function Category({ saveCategory, history, ...props }) {
             <h1 className="text-center ">
               <Badge color="success">
                 {" "}
-                {category.name !== undefined ? "Güncelle" : "Ekle"}
+                {category._id !== undefined ? "Güncelle" : "Ekle"}
               </Badge>
             </h1>
           </div>
@@ -96,10 +115,32 @@ function Category({ saveCategory, history, ...props }) {
               <Input type="file" name="file" id="imageFile" />
               <FormText color="muted">Kategoriye ait resim seçiniz.</FormText>
             </FormGroup> */}
-
             <Button type="submit" color="warning">
-              {category.name !== undefined ? "Güncelle" : "Ekle"}
-            </Button>
+              {category._id !== undefined ? "Güncelle" : "Ekle"}
+            </Button>{" "}
+            {category._id !== undefined ? (
+              <Button color="danger" onClick={() => toggle()}>
+                Sil
+              </Button>
+            ) : null}
+
+            <Modal
+              isOpen={modal}
+              toggle={toggle}
+            >
+              <ModalHeader toggle={toggle}>{category.name}'i silmek istediğinden emin misin?</ModalHeader>
+              <ModalBody>
+                {category.name}'i silmek istediğinden emin misin? Bu işlem geri alınamaz.
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" onClick={handleDelete}>
+                  SİL
+                </Button>{" "}
+                <Button color="secondary" onClick={toggle}>
+                  Vazgeç
+                </Button>
+              </ModalFooter>
+            </Modal>
           </Form>
         </Col>
         <Col xs="3"></Col>
@@ -126,6 +167,7 @@ function mapStateToProps(state, ownProps) {
 
 const mapDispatchToProps = {
   saveCategory,
+  deleteCategory,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);
