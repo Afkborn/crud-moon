@@ -33,7 +33,7 @@ function Product({
       getCategories();
     }
     setProduct({ ...props.product });
-  }, [props.product]);
+  }, [props.product, getCategories, categories.length]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -182,7 +182,7 @@ function Product({
 }
 
 export function getProductById(products, productId) {
-  return products.find((product) => product._id == productId) || null;
+  return products.find((product) => product._id === productId) || null;
 }
 
 export function getProductAPIById(productId) {
