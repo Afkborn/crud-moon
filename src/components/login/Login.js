@@ -21,7 +21,7 @@ function Login() {
 
   const configuration = {
     method: "post",
-    url: "https://moon-backend.afkborn.keenetic.pro/users/login",
+    url: "/users/login",
     data: {
       email,
       password,

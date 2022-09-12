@@ -39,7 +39,7 @@ export function deleteCategorySuccess(category) {
 export function getCategories() {
   const configuration = {
     method: "get",
-    url: "https://moon-backend.afkborn.keenetic.pro/categories",
+    url: "/categories",
   };
   return function (dispatch) {
     return axios(configuration)
@@ -55,7 +55,7 @@ export function getCategories() {
 export function saveCategoryAPI(category) {
   const configuration = {
     method: "post",
-    url: "https://moon-backend.afkborn.keenetic.pro/categories",
+    url: "/categories",
     data: category,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ export function saveCategoryAPI(category) {
   };
   if (category._id) {
     configuration.method = "put";
-    configuration.url = `https://moon-backend.afkborn.keenetic.pro/categories/${category._id}`;
+    configuration.url = `/categories/${category._id}`;
   }
   return axios(configuration);
 }
@@ -85,7 +85,7 @@ export function saveCategory(category) {
 export function deleteCategoryAPI(category) {
   const configuration = {
     method: "delete",
-    url: `https://moon-backend.afkborn.keenetic.pro/categories/${category._id}`,
+    url: `/categories/${category._id}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

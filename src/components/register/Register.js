@@ -21,7 +21,7 @@ function Register() {
   const [message, setMessage] = useState("");
   const configuration = {
     method: "post",
-    url: "https://moon-backend.afkborn.keenetic.pro/users/register",
+    url: "/users/register",
     data: {
       email,
       password,

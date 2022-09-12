@@ -41,7 +41,7 @@ export function deleteProductSuccess(product) {
 export function getProductsApi(categoryId) {
   const configuration = {
     method: "get",
-    url: "https://moon-backend.afkborn.keenetic.pro/products",
+    url: "/products",
     params: {
       categoryId: categoryId,
     },
@@ -67,7 +67,7 @@ export function getProducts(categoryId) {
 export function saveProductApi(product) {
   const configuration = {
     method: "post",
-    url: "https://moon-backend.afkborn.keenetic.pro/products",
+    url: "/products",
     data: product,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ export function saveProductApi(product) {
   };
   if (product.id) {
     configuration.method = "put";
-    configuration.url = `https://moon-backend.afkborn.keenetic.pro/products/${product.id}`;
+    configuration.url = `/products/${product.id}`;
   }
   return axios(configuration);
 }
@@ -97,7 +97,7 @@ export function saveProduct(product) {
 export function deleteProductApi(productId) {
   const configuration = {
     method: "delete",
-    url: `https://moon-backend.afkborn.keenetic.pro/products/${productId}`,
+    url: `/products/${productId}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
