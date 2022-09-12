@@ -12,6 +12,7 @@ import Profile from "../profile/Profile";
 import NotFound from "../common/NotFound";
 import ProtectedRoutes from "../common/ProtectedRoutes";
 import Category from "../categories/Category";
+import Product from "../products/Product";
 class App extends Component {
   render() {
     return (
@@ -25,6 +26,8 @@ class App extends Component {
           <Route path="/logout" component={Logout} />
           <ProtectedRoutes path="/category/:id" component={Category} />
           <ProtectedRoutes path="/category" component={Category} />
+          <ProtectedRoutes path="/product/:id" component={Product} />
+          <ProtectedRoutes path="/product" component={Product} />
           <Route component={NotFound} />
         </Switch>
       </Container>

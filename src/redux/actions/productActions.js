@@ -6,8 +6,12 @@ const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
 export function getProductsSuccess(products) {
-  return { type: actionTypes.GET_PRODUCTS_SUCCESS, payload: products };
+  return {
+    type: actionTypes.GET_PRODUCTS_SUCCESS,
+    payload: products,
+  };
 }
+
 export function createProductSuccess(product) {
   return {
     type: actionTypes.CREATE_PRODUCT_SUCCESS,
@@ -22,6 +26,13 @@ export function updateProductSuccess(product) {
   };
 }
 
+export function deleteProductSuccess(product) {
+  return {
+    type: actionTypes.DELETE_PRODUCT_SUCCESS,
+    payload: product,
+  };
+}
+
 export function getProducts(categoryId) {
   const configuration = {
     method: "get",
@@ -30,11 +41,9 @@ export function getProducts(categoryId) {
       categoryId: categoryId,
     },
   };
-
   if (categoryId == null) {
     delete configuration.params;
   }
-
   return function (dispatch) {
     return axios(configuration)
       .then((result) => {
@@ -55,27 +64,43 @@ export function saveProductApi(product) {
       Authorization: `Bearer ${token}`,
     },
   };
-  return axios(configuration).then(handleResponse).catch(handleError);
-}
-
-export async function handleResponse(response) {
-  if (response.ok) {
-    return response.json();
+  if (product.id) {
+    configuration.method = "put";
+    configuration.url = `https://moon-backend.afkborn.keenetic.pro/products/${product.id}`;
   }
-  const error = await response.text();
-  throw new Error(error);
-}
-
-export function handleError(error) {
-  console.error("API call failed. " + error);
-  throw error;
+  return axios(configuration);
 }
 
 export function saveProduct(product) {
   return function (dispatch) {
     return saveProductApi(product)
       .then((savedProduct) => {
-        dispatch(createProductSuccess(savedProduct));
+        product.id
+          ? dispatch(updateProductSuccess(savedProduct))
+          : dispatch(createProductSuccess(savedProduct));
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
+}
+
+export function deleteProductApi(productId) {
+  const configuration = {
+    method: "delete",
+    url: `https://moon-backend.afkborn.keenetic.pro/products/${productId}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return axios(configuration);
+}
+
+export function deleteProduct(product) {
+  return function (dispatch) {
+    return deleteProductApi(product.id)
+      .then(() => {
+        dispatch(deleteProductSuccess(product));
       })
       .catch((error) => {
         throw error;

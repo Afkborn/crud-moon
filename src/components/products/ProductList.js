@@ -1,10 +1,9 @@
 import React from "react";
-import { Badge, Table } from "reactstrap";
+import { Badge, Button, Container, Table } from "reactstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 function ProductList({ currentCategory, products, history, ...props }) {
-
   function renderProduct(product) {
     return (
       <tr key={product._id}>
@@ -35,9 +34,23 @@ function ProductList({ currentCategory, products, history, ...props }) {
     <div>
       <h2>
         <Badge color="success">Ürünler</Badge>{" "}
-        <Badge color="danger">{currentCategory.name}</Badge> {" "}
-        <Badge color="info">{products.length}</Badge> {" "}
+        <Badge color="danger">{currentCategory.name}</Badge>{" "}
+        <Badge color="info">{products.length}</Badge>{" "}
       </h2>
+
+      <Container fluid>
+        <Link to="/product">
+          <Button color="secondary" className="text-center">
+            <img
+              src="add.svg"
+              style={{ height: 16, width: 16 }} // loc end item
+              alt="edit"
+              className="link-black "
+            />{" "}
+            Ürün Ekle
+          </Button>
+        </Link>
+      </Container>
 
       <div>
         <Table>

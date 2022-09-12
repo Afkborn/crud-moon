@@ -15,6 +15,16 @@
     text-decoration: none;
 }
 
+.link-white{
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+.link-white:hover{
+    color: rgb(189, 31, 31);
+    text-decoration: none;
+}
 
 .brand{
     color: rgb(0, 0, 0);

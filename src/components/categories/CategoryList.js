@@ -20,14 +20,12 @@ function CategoryList({
   useEffect(() => {
     getCategories();
     getProducts();
-  }, [getCategories,getProducts ]); // fıx warning 
+  }, [getCategories, getProducts]); // fıx warning
 
   function selectCategory(category) {
     changeCategory(category);
     getProducts(category._id);
   }
-
-  
 
   return (
     <div>
@@ -55,11 +53,11 @@ function CategoryList({
           </ListGroupItem>
         ))}
       </ListGroup>
-      <Button className="secondary mt-3 text-center">
-        <Link className="link-black" to="/category">
+      <Link to="/category">
+        <Button color="success" className="secondary mt-3 text-center">
           Kategori ekle
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 }

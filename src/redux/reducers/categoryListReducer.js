@@ -8,6 +8,15 @@ export default function categoryListReducer(
   switch (action.type) {
     case actionTypes.GET_CATEGORIES_SUCCESS:
       return action.payload;
+    case actionTypes.CREATE_CATEGORY_SUCCESS:
+      return [...state, { ...action.payload }];
+    case actionTypes.UPDATE_CATEGORY_SUCCESS:
+      return state.map((category) =>
+        category._id === action.payload._id ? action.payload : category
+      );
+    case actionTypes.DELETE_CATEGORY_SUCCESS:
+      return state.filter((category) => category._id !== action.payload._id);
+
     default:
       return state;
   }
