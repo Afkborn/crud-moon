@@ -4,6 +4,7 @@ import {
   saveCategory,
   deleteCategory,
 } from "../../redux/actions/categoryActions";
+import DeletePopUp from "../popup/DeletePopUp";
 import {
   Row,
   Col,
@@ -12,13 +13,7 @@ import {
   Label,
   Input,
   Button,
-  // FormText,
   Badge,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-
 } from "reactstrap";
 
 function Category({ saveCategory, deleteCategory, history, ...props }) {
@@ -33,6 +28,7 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
       history.push("/");
     });
   }
+
   function toggle() {
     setModal(!modal);
   }
@@ -48,9 +44,8 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
     deleteCategory(category).then(() => {
       history.push("/");
     });
-    toggle()
+    toggle();
   }
-
 
   return (
     <div className="mt-4">
@@ -67,6 +62,16 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
           </div>
 
           <Form className="form" onSubmit={handleSubmit}>
+            <FormGroup>
+              <Label for="id">Kategori ID</Label>
+              <Input
+                type="text"
+                name="id"
+                id="id"
+                value={category._id}
+                disabled
+              />
+            </FormGroup>
             <FormGroup>
               <Label for="name">Kategori İsmi</Label>
               <Input
@@ -110,11 +115,6 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
                 onChange={handleChange}
               />
             </FormGroup>
-            {/* <FormGroup>
-              <Label for="imageFile">File</Label>
-              <Input type="file" name="file" id="imageFile" />
-              <FormText color="muted">Kategoriye ait resim seçiniz.</FormText>
-            </FormGroup> */}
             <Button type="submit" color="warning">
               {category._id !== undefined ? "Güncelle" : "Ekle"}
             </Button>{" "}
@@ -123,24 +123,12 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
                 Sil
               </Button>
             ) : null}
-
-            <Modal
-              isOpen={modal}
+            <DeletePopUp
+              modal={modal}
               toggle={toggle}
-            >
-              <ModalHeader toggle={toggle}>{category.name}'i silmek istediğinden emin misin?</ModalHeader>
-              <ModalBody>
-                {category.name}'i silmek istediğinden emin misin? Bu işlem geri alınamaz.
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" onClick={handleDelete}>
-                  SİL
-                </Button>{" "}
-                <Button color="secondary" onClick={toggle}>
-                  Vazgeç
-                </Button>
-              </ModalFooter>
-            </Modal>
+              name={category.name}
+              handleDelete={handleDelete}
+            />
           </Form>
         </Col>
         <Col xs="3"></Col>

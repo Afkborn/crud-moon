@@ -12,6 +12,8 @@ export function getProductsSuccess(products) {
   };
 }
 
+
+
 export function createProductSuccess(product) {
   return {
     type: actionTypes.CREATE_PRODUCT_SUCCESS,
@@ -33,7 +35,10 @@ export function deleteProductSuccess(product) {
   };
 }
 
-export function getProducts(categoryId) {
+
+
+
+export function getProductsApi(categoryId) {
   const configuration = {
     method: "get",
     url: "https://moon-backend.afkborn.keenetic.pro/products",
@@ -44,8 +49,12 @@ export function getProducts(categoryId) {
   if (categoryId == null) {
     delete configuration.params;
   }
+  return axios(configuration);
+}
+
+export function getProducts(categoryId) {
   return function (dispatch) {
-    return axios(configuration)
+    return getProductsApi(categoryId)
       .then((result) => {
         dispatch(getProductsSuccess(result.data));
       })
