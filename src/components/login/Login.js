@@ -12,13 +12,18 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Cookies from "universal-cookie";
+
+
+
 const cookies = new Cookies();
+
+
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
-  
+
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -39,7 +44,8 @@ function Login() {
       return;
     }
     axios(configuration)
-      .then((result) => {        setLogin(true);
+      .then((result) => {
+        setLogin(true);
         cookies.set("TOKEN", result.data.token, {
           path: "/",
         });
@@ -47,6 +53,7 @@ function Login() {
       })
       .catch((error) => {
         setError(true);
+        console.log(error);
         setMessage("Email or password is wrong");
       });
   };
@@ -54,7 +61,7 @@ function Login() {
   const handleChange = (e) => {
     setMessage("");
     setError(false);
-  }
+  };
 
   function validateForm() {
     //check email length
@@ -73,7 +80,7 @@ function Login() {
       <Row>
         <Col xs="3"></Col>
         <Col xs="6">
-          <Form className="form" onChange={handleChange} >
+          <Form className="form" onChange={handleChange}>
             <FormGroup>
               <Label for="email">Email</Label>
               <Input
@@ -115,4 +122,6 @@ function Login() {
   );
 }
 
-export default Login;
+
+
+export default (Login);
