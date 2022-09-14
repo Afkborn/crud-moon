@@ -18,6 +18,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
+  
+  const [error, setError] = useState(false);
+  const [message, setMessage] = useState("");
 
   const configuration = {
     method: "post",
@@ -30,6 +33,11 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      setMessage("Please fill all fields");
+      setError(true);
+      return;
+    }
     axios(configuration)
       .then((result) => {        setLogin(true);
         cookies.set("TOKEN", result.data.token, {
@@ -38,16 +46,34 @@ function Login() {
         window.location.href = "/";
       })
       .catch((error) => {
-        error = new Error();
+        setError(true);
+        setMessage("Email or password is wrong");
       });
   };
+
+  const handleChange = (e) => {
+    setMessage("");
+    setError(false);
+  }
+
+  function validateForm() {
+    //check email length
+    if (email.length < 5 || email.length > 50) {
+      return false;
+    }
+    //check password length
+    if (password.length < 5 || password.length > 50) {
+      return false;
+    }
+    return true;
+  }
 
   return (
     <Container fluid className="mt-4" onSubmit={(e) => handleSubmit(e)}>
       <Row>
         <Col xs="3"></Col>
         <Col xs="6">
-          <Form className="form">
+          <Form className="form" onChange={handleChange} >
             <FormGroup>
               <Label for="email">Email</Label>
               <Input
@@ -55,6 +81,7 @@ function Login() {
                 name="email"
                 id="email"
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
               />
             </FormGroup>
@@ -65,6 +92,7 @@ function Login() {
                 name="password"
                 id="pwd"
                 value={password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormGroup>
@@ -78,6 +106,7 @@ function Login() {
             {login ? (
               <p className="text-success">You Are Logged in Successfully</p>
             ) : null}
+            {error ? <p className="text-danger">{message}</p> : null}
           </Form>
         </Col>
         <Col xs="3"></Col>
