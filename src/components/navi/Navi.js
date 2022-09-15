@@ -12,7 +12,7 @@ export default class Navi extends Component {
       <Row>
         <Col md="6" sm="2" lg="8"></Col>
         <Col xs="5" sm="4" md="3" lg="2">
-        <Link to="/profile" className="link-black">
+        <Link to="/profile/dashboard" className="link-black">
             Profile
           </Link>
         </Col>

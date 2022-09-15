@@ -36,6 +36,7 @@
 }
 
 
+
 .menu-line{
     font-size: 2em;
     font-weight: 600;
@@ -105,3 +106,7 @@
     right: 10px;
 }
 
+.navTabBG ul > li > a {
+    background-color: gray;
+    color: white;
+}

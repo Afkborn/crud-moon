@@ -8,7 +8,7 @@ import Register from "../register/Register";
 import "../../styles/App.css";
 import Logout from "../login/Logout";
 import { connect } from "react-redux";
-import Profile from "../profile/Profile";
+import ProfileDashboard from "../profile/ProfileDashboard";
 import NotFound from "../common/NotFound";
 import ProtectedRoutes from "../common/ProtectedRoutes";
 import Category from "../categories/Category";
@@ -22,7 +22,7 @@ class App extends Component {
           <ProtectedRoutes path="/" exact component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <ProtectedRoutes path="/profile" component={Profile} />
+          <ProtectedRoutes path="/profile/dashboard" component={ProfileDashboard} />
           <Route path="/logout" component={Logout} />
           <ProtectedRoutes path="/category/:id" component={Category} />
           <ProtectedRoutes path="/category" component={Category} />

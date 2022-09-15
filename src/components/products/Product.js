@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { saveProduct, deleteProduct } from "../../redux/actions/productActions";
 import { getCategories } from "../../redux/actions/categoryActions";
 
-import DeletePopUp from "../popup/DeletePopUp";
+import DeletePopUp from "../toolbox/DeletePopUp";
 import {
   Row,
   Col,
