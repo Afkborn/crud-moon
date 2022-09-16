@@ -105,8 +105,23 @@
     position: absolute;
     right: 10px;
 }
+.to-left{
+    position: absolute;
+    left: 10px;
+}
 
 .navTabBG ul > li > a {
     background-color: gray;
     color: white;
+}
+
+.border{
+    border: 1px solid rgb(189, 31, 31);
+}
+
+
+
+
+.clickable{
+    cursor: pointer;
 }

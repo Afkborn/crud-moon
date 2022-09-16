@@ -30,7 +30,8 @@ function ProfileDashboard({ user, getUserDetails, ...props }) {
   return (
     <div className="mt-5">
       <div>
-        <Nav tabs pills justified>
+        <h1 hidden={activeTab === "0" ? false : true} className="m-2" >My Account</h1>
+        <Nav hidden={activeTab === "0" ? true : false} tabs pills justified>
           <NavItem>
             <NavLink
               className={activeTab === "1" ? "active" : "" }
@@ -60,7 +61,7 @@ function ProfileDashboard({ user, getUserDetails, ...props }) {
           </NavItem>
         </Nav>
         <TabContent activeTab={activeTab}>
-          <TabPane tabId="0"><TabDashboard/></TabPane>
+          <TabPane tabId="0"><TabDashboard setActiveTab={setActiveTab}/></TabPane>
           <TabPane tabId="1"><TabAccount/></TabPane>
           <TabPane tabId="2"><TabOrders/></TabPane>
           <TabPane tabId="3"><TabComments/></TabPane>

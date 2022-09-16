@@ -12,13 +12,8 @@ export default class Navi extends Component {
       <Row>
         <Col md="6" sm="2" lg="8"></Col>
         <Col xs="5" sm="4" md="3" lg="2">
-        <Link to="/profile/dashboard" className="link-black">
+          <Link to="/profile/dashboard" className="link-black">
             Profile
-          </Link>
-        </Col>
-        <Col xs="5" sm="4" md="3" lg="2">
-          <Link to="/logout" className="link-black">
-            Logout
           </Link>
         </Col>
       </Row>
@@ -27,20 +22,20 @@ export default class Navi extends Component {
   renderBasic = () => {
     return (
       <Row>
-      <Col md="6" sm="2" lg="8"></Col>
-      <Col xs="5" sm="4" md="3" lg="2">
-        <Link to="/login" className="link-black m-1">
-          Login
-        </Link>
-      </Col>
-      <Col xs="5" sm="4" md="3" lg="2">
-        <Link to="/register" className="link-black">
-          Register
-        </Link>
-      </Col>
-    </Row>
-    )
-  }
+        <Col md="6" sm="2" lg="8"></Col>
+        <Col xs="5" sm="4" md="3" lg="2">
+          <Link to="/login" className="link-black m-1">
+            Login
+          </Link>
+        </Col>
+        <Col xs="5" sm="4" md="3" lg="2">
+          <Link to="/register" className="link-black">
+            Register
+          </Link>
+        </Col>
+      </Row>
+    );
+  };
 
   render() {
     return (
@@ -54,9 +49,7 @@ export default class Navi extends Component {
               Moon
             </Link>
           </Col>
-          <Col xs="3">
-            {token ? this.renderProfile() : this.renderBasic()}
-          </Col>
+          <Col xs="3">{token ? this.renderProfile() : this.renderBasic()}</Col>
         </Row>
       </Container>
     );

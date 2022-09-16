@@ -1,6 +1,6 @@
 import React  from "react";
 
-function TabComments() {
+function TabComments({ setActiveTab, history, ...props}) {
   return <div><h1>TAB COMMENTS</h1></div>;
 }
 
