@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 
 import { connect } from "react-redux";
 import { saveProduct, deleteProduct } from "../../redux/actions/productActions";
@@ -14,6 +14,7 @@ import {
   Input,
   Button,
   Badge,
+  FormText,
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
 function Product({
@@ -27,7 +28,8 @@ function Product({
 }) {
   const [product, setProduct] = useState({ ...props.product });
   const [modal, setModal] = useState(false);
-
+  const [img, setImg] = useState();
+  const oldProduct = { ...props.product };
   useEffect(() => {
     if (categories.length === 0) {
       getCategories();
@@ -41,6 +43,11 @@ function Product({
       history.push("/");
     });
   }
+
+  const onImageChange = (e) => {
+    const [file] = e.target.files;
+    setImg(URL.createObjectURL(file));
+  };
 
   function toggle() {
     setModal(!modal);
@@ -109,7 +116,7 @@ function Product({
             <FormGroup>
               <Label for="price">Fiyat</Label>
               <Input
-                type="text"
+                type="number"
                 name="price"
                 id="price"
                 value={product.price}
@@ -119,19 +126,19 @@ function Product({
             <FormGroup>
               <Label for="stock">Stok</Label>
               <Input
-                type="text"
+                type="number"
                 name="stock"
                 id="stock"
                 value={product.stock}
                 onChange={handleChange}
               />
             </FormGroup>
-            {product.img ? (
+            {oldProduct.img ? (
               <FormGroup>
-                <Label for="currentImg">Güncel Resim:</Label>
+                <Label for="currentImg">Eski Resim:</Label>
                 <img
-                  src={product.img}
-                  style={{ height: 75, width: 75 }} // loc end item
+                  src={oldProduct.img}
+                  style={{ height: 75, width: 75 }} 
                   alt="edit"
                   name="currentImg"
                   id="currentImg"
@@ -140,15 +147,33 @@ function Product({
               </FormGroup>
             ) : null}
             <FormGroup>
-              <Label for="img">Resim Link</Label>
+              <Label for="exampleFile">Dosya</Label>
               <Input
-                type="text"
-                name="img"
-                id="img"
-                value={product.img}
-                onChange={handleChange}
+                type="file"
+                name="file"
+                accept=".png"
+                id="exampleFile"
+                onChange={onImageChange}
               />
+              <FormText color="muted">
+                Resim yüklemek için lütfen dosya seçiniz. (max 2MB, PNG)
+              </FormText>
             </FormGroup>
+
+            {img ? (
+              <FormGroup>
+                <Label for="currentImg">Yeni Resim:</Label>
+                <img
+                  src={img}
+                  style={{ height: 75, width: 75 }} 
+                  alt="edit"
+                  name="currentImg"
+                  id="currentImg"
+                  className="link-black "
+                />
+              </FormGroup>
+            ) : null}
+
             <FormGroup>
               <Label for="description">Açıklama</Label>
               <Input

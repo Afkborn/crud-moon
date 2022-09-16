@@ -65,6 +65,7 @@ export function getProducts(categoryId) {
 }
 
 export function saveProductApi(product) {
+  console.log(product)
   const configuration = {
     method: "post",
     url: "/products",
@@ -73,9 +74,9 @@ export function saveProductApi(product) {
       Authorization: `Bearer ${token}`,
     },
   };
-  if (product.id) {
-    configuration.method = "put";
-    configuration.url = `/products/${product.id}`;
+  if (product._id) {
+    configuration.method = "patch";
+    configuration.url = `/products/${product._id}`;
   }
   return axios(configuration);
 }
@@ -84,7 +85,7 @@ export function saveProduct(product) {
   return function (dispatch) {
     return saveProductApi(product)
       .then((savedProduct) => {
-        product.id
+        product._id
           ? dispatch(updateProductSuccess(savedProduct))
           : dispatch(createProductSuccess(savedProduct));
       })
@@ -107,7 +108,7 @@ export function deleteProductApi(productId) {
 
 export function deleteProduct(product) {
   return function (dispatch) {
-    return deleteProductApi(product.id)
+    return deleteProductApi(product._id)
       .then(() => {
         dispatch(deleteProductSuccess(product));
       })

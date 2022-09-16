@@ -62,7 +62,7 @@ function ProfileDashboard({ user, getUserDetails, ...props }) {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="0"><TabDashboard setActiveTab={setActiveTab}/></TabPane>
-          <TabPane tabId="1"><TabAccount/></TabPane>
+          <TabPane tabId="1"><TabAccount user={user}/></TabPane>
           <TabPane tabId="2"><TabOrders/></TabPane>
           <TabPane tabId="3"><TabComments/></TabPane>
         </TabContent>
