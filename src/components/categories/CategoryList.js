@@ -23,6 +23,7 @@ function CategoryList({
   }, [getCategories, getProducts]); // fıx warning
 
   function selectCategory(category) {
+    console.log("category");
     changeCategory(category);
     getProducts(category._id);
   }
@@ -30,11 +31,21 @@ function CategoryList({
   return (
     <div>
       <h2 className="text-center">
-        <Badge color="info">Kategori</Badge>{" "}
+        <Badge color="info" onClick={() => selectCategory("")}>
+          Kategori
+        </Badge>{" "}
         <Badge color="secondary">{categories.length}</Badge>
       </h2>
 
       <ListGroup>
+        <ListGroupItem
+          active={currentCategory === ""}
+          onClick={() => selectCategory("")}
+          key={0}
+        >
+          <span>Tüm Ürünler</span>
+        </ListGroupItem>
+
         {categories.map((category) => (
           <ListGroupItem
             active={category._id === currentCategory._id}

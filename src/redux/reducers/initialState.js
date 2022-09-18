@@ -1,7 +1,7 @@
 const initialState = {
   spinnerStatus: false,
   categories: [],
-  currentCategory: {},
+  currentCategory: "",
   products: [],
   user: {},
   media : null,
