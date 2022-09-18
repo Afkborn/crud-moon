@@ -16,7 +16,7 @@ import {
   Button,
   Badge,
   FormText,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
 import axios from "axios";
@@ -45,7 +45,6 @@ function Product({
     if (categories.length === 0) {
       getCategories();
     }
-    setProduct({ ...props.product });
   }, [props.product, getCategories, categories.length]);
 
   function handleSubmit(event) {

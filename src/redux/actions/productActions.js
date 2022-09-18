@@ -61,6 +61,7 @@ export function getProducts(categoryId) {
 }
 
 export function saveProductApi(product) {
+  console.log(`saveProductApi product`, product);
   const configuration = {
     method: "post",
     url: "/products",
@@ -73,7 +74,7 @@ export function saveProductApi(product) {
     configuration.method = "patch";
     configuration.url = `/products/${product._id}`;
   }
-
+  console.log(`savedProductApi configuration`, configuration);
   return axios(configuration);
 }
 
