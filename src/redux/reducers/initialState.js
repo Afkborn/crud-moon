@@ -4,5 +4,7 @@ const initialState = {
   currentCategory: {},
   products: [],
   user: {},
+  media : null,
+
 };
 export default initialState;

@@ -1,7 +1,8 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import { connect } from "react-redux";
 import { saveProduct, deleteProduct } from "../../redux/actions/productActions";
+
 import { getCategories } from "../../redux/actions/categoryActions";
 
 import DeletePopUp from "../toolbox/DeletePopUp";
@@ -17,6 +18,11 @@ import {
   FormText,
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
+import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+const token = cookies.get("TOKEN");
+
 function Product({
   products,
   categories,
@@ -29,6 +35,7 @@ function Product({
   const [product, setProduct] = useState({ ...props.product });
   const [modal, setModal] = useState(false);
   const [img, setImg] = useState();
+
   const oldProduct = { ...props.product };
   useEffect(() => {
     if (categories.length === 0) {
@@ -46,7 +53,21 @@ function Product({
 
   const onImageChange = (e) => {
     const [file] = e.target.files;
-    setImg(URL.createObjectURL(file));
+    const newMedia = new FormData();
+    newMedia.append("image", file);
+    newMedia.append("imageType", "main");
+
+    axios
+      .post("/upload", newMedia, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        setProduct({ ...product, imageId: result.data._id });
+
+        setImg(URL.createObjectURL(file));
+      });
   };
 
   function toggle() {
@@ -82,16 +103,18 @@ function Product({
           </div>
 
           <Form className="form" onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label for="id">Ürün ID</Label>
-              <Input
-                type="text"
-                name="id"
-                id="id"
-                value={product._id}
-                disabled
-              />
-            </FormGroup>
+            {product._id !== undefined ? (
+              <FormGroup>
+                <Label for="id">Ürün ID</Label>
+                <Input
+                  type="text"
+                  name="id"
+                  id="id"
+                  value={product._id}
+                  disabled
+                />
+              </FormGroup>
+            ) : null}
             <FormGroup>
               <Label for="name">Ürün İsmi</Label>
               <Input
@@ -133,12 +156,12 @@ function Product({
                 onChange={handleChange}
               />
             </FormGroup>
-            {oldProduct.img ? (
+            {oldProduct.imageId ? (
               <FormGroup>
                 <Label for="currentImg">Eski Resim:</Label>
                 <img
-                  src={oldProduct.img}
-                  style={{ height: 75, width: 75 }} 
+                  src={"/media/main/" + oldProduct.imageId}
+                  style={{ height: 75, width: 75 }}
                   alt="edit"
                   name="currentImg"
                   id="currentImg"
@@ -159,13 +182,12 @@ function Product({
                 Resim yüklemek için lütfen dosya seçiniz. (max 2MB, PNG)
               </FormText>
             </FormGroup>
-
             {img ? (
               <FormGroup>
                 <Label for="currentImg">Yeni Resim:</Label>
                 <img
                   src={img}
-                  style={{ height: 75, width: 75 }} 
+                  style={{ height: 75, width: 75 }}
                   alt="edit"
                   name="currentImg"
                   id="currentImg"
@@ -173,7 +195,6 @@ function Product({
                 />
               </FormGroup>
             ) : null}
-
             <FormGroup>
               <Label for="description">Açıklama</Label>
               <Input

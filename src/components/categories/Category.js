@@ -62,16 +62,18 @@ function Category({ saveCategory, deleteCategory, history, ...props }) {
           </div>
 
           <Form className="form" onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label for="id">Kategori ID</Label>
-              <Input
-                type="text"
-                name="id"
-                id="id"
-                value={category._id}
-                disabled
-              />
-            </FormGroup>
+            {category._id !== undefined ? (
+              <FormGroup>
+                <Label for="id">Kategori ID</Label>
+                <Input
+                  type="text"
+                  name="id"
+                  id="id"
+                  value={category._id}
+                  disabled
+                />
+              </FormGroup>
+            ) : null}
             <FormGroup>
               <Label for="name">Kategori İsmi</Label>
               <Input

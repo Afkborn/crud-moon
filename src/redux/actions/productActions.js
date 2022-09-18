@@ -12,9 +12,8 @@ export function getProductsSuccess(products) {
   };
 }
 
-
-
 export function createProductSuccess(product) {
+  console.log("createProductSuccess", product);
   return {
     type: actionTypes.CREATE_PRODUCT_SUCCESS,
     payload: product,
@@ -35,9 +34,6 @@ export function deleteProductSuccess(product) {
   };
 }
 
-
-
-
 export function getProductsApi(categoryId) {
   const configuration = {
     method: "get",
@@ -46,7 +42,7 @@ export function getProductsApi(categoryId) {
       categoryId: categoryId,
     },
   };
-  if (categoryId == null) {
+  if (categoryId === null) {
     delete configuration.params;
   }
   return axios(configuration);
@@ -65,7 +61,6 @@ export function getProducts(categoryId) {
 }
 
 export function saveProductApi(product) {
-  console.log(product)
   const configuration = {
     method: "post",
     url: "/products",
@@ -78,6 +73,7 @@ export function saveProductApi(product) {
     configuration.method = "patch";
     configuration.url = `/products/${product._id}`;
   }
+
   return axios(configuration);
 }
 
