@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { connect } from "react-redux";
 import { saveProduct, deleteProduct } from "../../redux/actions/productActions";
-
+import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
 import { getCategories } from "../../redux/actions/categoryActions";
 
 import DeletePopUp from "../toolbox/DeletePopUp";
@@ -16,6 +16,7 @@ import {
   Button,
   Badge,
   FormText,
+  Spinner
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
 import axios from "axios";
@@ -29,14 +30,17 @@ function Product({
   getCategories,
   saveProduct,
   deleteProduct,
+  spinner,
+  showSpinner,
+  hideSpinner,
   history,
   ...props
 }) {
   const [product, setProduct] = useState({ ...props.product });
   const [modal, setModal] = useState(false);
   const [img, setImg] = useState();
-
   const oldProduct = { ...props.product };
+
   useEffect(() => {
     if (categories.length === 0) {
       getCategories();
@@ -53,10 +57,11 @@ function Product({
 
   const onImageChange = (e) => {
     const [file] = e.target.files;
+    setImg(URL.createObjectURL(file));
+    showSpinner();
     const newMedia = new FormData();
     newMedia.append("image", file);
     newMedia.append("imageType", "main");
-
     axios
       .post("/upload", newMedia, {
         headers: {
@@ -65,8 +70,7 @@ function Product({
       })
       .then((result) => {
         setProduct({ ...product, imageId: result.data._id });
-
-        setImg(URL.createObjectURL(file));
+        hideSpinner();
       });
   };
 
@@ -183,17 +187,23 @@ function Product({
               </FormText>
             </FormGroup>
             {img ? (
-              <FormGroup>
-                <Label for="currentImg">Yeni Resim:</Label>
-                <img
-                  src={img}
-                  style={{ height: 75, width: 75 }}
-                  alt="edit"
-                  name="currentImg"
-                  id="currentImg"
-                  className="link-black "
-                />
-              </FormGroup>
+              spinner ? (
+                <div className="text-center">
+                  {spinner && <Spinner type="grow" color="danger" />}
+                </div>
+              ) : (
+                <FormGroup>
+                  <Label for="currentImg">Yeni Resim:</Label>
+                  <img
+                    src={img}
+                    style={{ height: 75, width: 75 }}
+                    alt="edit"
+                    name="currentImg"
+                    id="currentImg"
+                    className="link-black "
+                  />
+                </FormGroup>
+              )
             ) : null}
             <FormGroup>
               <Label for="description">Açıklama</Label>
@@ -249,6 +259,7 @@ function mapStateToProps(state, ownProps) {
     product,
     products: state.productListReducer,
     categories: state.categoryListReducer,
+    spinner: state.spinnerReducer,
   };
 }
 
@@ -256,6 +267,8 @@ const mapDispatchToProps = {
   getCategories,
   saveProduct,
   deleteProduct,
+  showSpinner,
+  hideSpinner,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);

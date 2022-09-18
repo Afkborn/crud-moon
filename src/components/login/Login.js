@@ -9,17 +9,17 @@ import {
   Label,
   Row,
   Col,
+  Spinner,
 } from "reactstrap";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-
+import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
+import { connect } from "react-redux";
 
 const cookies = new Cookies();
 
-
-
-function Login() {
+function Login({ spinner, showSpinner, hideSpinner, history, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
@@ -37,6 +37,7 @@ function Login() {
   };
 
   const handleSubmit = (e) => {
+    showSpinner();
     e.preventDefault();
     if (!validateForm()) {
       setMessage("Please fill all fields");
@@ -49,12 +50,14 @@ function Login() {
         cookies.set("TOKEN", result.data.token, {
           path: "/",
         });
+        hideSpinner();
         window.location.href = "/";
       })
       .catch((error) => {
         setError(true);
         console.log(error);
         setMessage("Email or password is wrong");
+        hideSpinner();
       });
   };
 
@@ -110,18 +113,30 @@ function Login() {
             >
               Login
             </Button>
+
             {login ? (
               <p className="text-success">You Are Logged in Successfully</p>
             ) : null}
             {error ? <p className="text-danger">{message}</p> : null}
           </Form>
+          <div className="text-center">
+            {spinner && <Spinner type="grow" color="danger" />}
+          </div>
         </Col>
         <Col xs="3"></Col>
       </Row>
     </Container>
   );
 }
+function mapStateToProps(state) {
+  return {
+    spinner: state.spinnerReducer,
+  };
+}
 
+const mapDispatchToProps = {
+  showSpinner,
+  hideSpinner,
+};
 
-
-export default (Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

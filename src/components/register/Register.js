@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
+import { connect } from "react-redux";
 import {
   Button,
   Container,
@@ -9,10 +10,11 @@ import {
   Label,
   Row,
   Col,
+  Spinner,
 } from "reactstrap";
 import axios from "axios";
 
-function Register() {
+function Register({ spinner, showSpinner, hideSpinner, history, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [register, setRegister] = useState(false);
@@ -140,6 +142,9 @@ function Register() {
             ) : null}
             {error ? <p className="text-danger">{message}</p> : null}
           </Form>
+          <div className="text-center">
+            {spinner && <Spinner type="grow" color="danger" />}
+          </div>
         </Col>
         <Col xs="3"></Col>
       </Row>
@@ -147,4 +152,16 @@ function Register() {
   );
 }
 
-export default Register;
+function mapStateToProps(state) {
+  return {
+    spinner: state.spinnerReducer,
+  };
+}
+
+const mapDispatchToProps = {
+  showSpinner,
+  hideSpinner,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
+
