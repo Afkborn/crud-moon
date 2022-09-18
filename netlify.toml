@@ -1,39 +1,6 @@
 [[redirects]]
-  from = "/categories"
-  to = "https://moon-backend.afkborn.keenetic.pro/categories"
+  from = "/*"
+  to = "https://moon-backend.afkborn.keenetic.pro/:splat"
   status = 200
   force = true
   headers = {X-From = "Netlify"}
-
-[[redirects]]
-  from = "/categories/*"
-  to = "https://moon-backend.afkborn.keenetic.pro/categories/:splat"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-
-
-[[redirects]]
-  from = "/products"
-  to = "https://moon-backend.afkborn.keenetic.pro/products"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-
-
-[[redirects]]
-  from = "/products/*"
-  to = "https://moon-backend.afkborn.keenetic.pro/products/:splat"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-
-
-
-[[redirects]]
-  from = "/users/*"
-  to = "https://moon-backend.afkborn.keenetic.pro/users/:splat"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-
