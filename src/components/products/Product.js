@@ -20,9 +20,16 @@ import {
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
 import axios from "axios";
+import alertify from "alertifyjs";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
+
+//TODO LİST
+// fotoğraf upload ederken ekle veya güncelle tuşuna basılmasın.
+// moon user ekranında picture görüntüleme işlemini yap
+// database için thumnbail eklemeyi bul, image upload edildiğinde aynı şekilde thumnbail oluştursun, oluşturulan thumnbaile /media/thumbnail/ şeklinde erişilebilsin
+// REST API doc güncelemesi yap
 
 function Product({
   products,
@@ -40,6 +47,7 @@ function Product({
   const [modal, setModal] = useState(false);
   const [img, setImg] = useState();
   const oldProduct = { ...props.product };
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -47,14 +55,64 @@ function Product({
     }
   }, [props.product, getCategories, categories.length]);
 
+  // bootstrap required yeterli şimdilik.
+  // function validateForm() {
+  //   console.log(product)
+  //   if (product.name === undefined || product.name === "") {
+  //     alertify.error("Name is required");
+  //     return false;
+  //   }
+  //   if (product.categoryId === undefined || product.categoryId === "") {
+  //     alertify.error("Category is required");
+  //     return false;
+  //   }
+  //   if (product.price === undefined || product.price === "") {
+  //     alertify.error("Price is required");
+  //     return false;
+  //   }
+  //   if (product.stock === undefined || product.stock === "") {
+  //     alertify.error("Stock is required");
+  //     return false;
+  //   }
+  //   if (product.imageId === undefined || product.imageId === "") {
+  //     alertify.error("Image is required");
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+
+  function compareProduct() {
+    if (product.name === oldProduct.name &&
+      product.categoryId === oldProduct.categoryId &&
+      product.price === oldProduct.price &&
+      product.stock === oldProduct.stock &&
+      product.imageId === oldProduct.imageId) {
+      return true;
+    }
+    return false;
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
+    // if (!validateForm()) return;
+    if (isUploading) {
+      alertify.notify("Fotoğraf yükleniyor, lütfen bekleyin", "warning", 5);
+      return;
+    }
+    if (compareProduct()) {
+      alertify.notify("Değişiklik yapılmadı", "warning", 5);
+      return;
+    }
+
+
     saveProduct(product).then(() => {
       history.push("/");
     });
   }
 
   const onImageChange = (e) => {
+    setIsUploading(true);
     const [file] = e.target.files;
     setImg(URL.createObjectURL(file));
     showSpinner();
@@ -70,6 +128,7 @@ function Product({
       .then((result) => {
         setProduct({ ...product, imageId: result.data._id });
         hideSpinner();
+        setIsUploading(false);
       });
   };
 
@@ -126,6 +185,7 @@ function Product({
                 id="name"
                 value={product.name}
                 onChange={handleChange}
+                required
               />
             </FormGroup>
             <SelectInput
@@ -133,6 +193,7 @@ function Product({
               label="Kategori"
               value={product.categoryId || ""}
               defaultOption="Kategori Seçiniz"
+              required={true}
               options={categories.map((category) => ({
                 value: category._id,
                 text: category.name,
@@ -145,6 +206,7 @@ function Product({
                 type="number"
                 name="price"
                 id="price"
+                required
                 value={product.price}
                 onChange={handleChange}
               />
@@ -155,6 +217,7 @@ function Product({
                 type="number"
                 name="stock"
                 id="stock"
+                required
                 value={product.stock}
                 onChange={handleChange}
               />
@@ -212,6 +275,7 @@ function Product({
                 id="description"
                 value={product.description}
                 onChange={handleChange}
+                required
               />
             </FormGroup>
             <Button type="submit" color="warning">

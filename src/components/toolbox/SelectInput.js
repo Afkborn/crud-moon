@@ -8,6 +8,7 @@ const SelectInput = ({
   value,
   error,
   options,
+  required,
 }) => {
   return (
     <div className="form-group">
@@ -18,6 +19,7 @@ const SelectInput = ({
           value={value}
           onChange={onChange}
           className="form-control"
+          required={required}
         >
           <option value="">{defaultOption}</option>
           {options.map((option) => {
