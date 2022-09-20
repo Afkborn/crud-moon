@@ -2,10 +2,12 @@ import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
 import Cookies from "universal-cookie";
+import { hideSpinner } from "./spinnerActions";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
 export function getProductsSuccess(products) {
+
   return {
     type: actionTypes.GET_PRODUCTS_SUCCESS,
     payload: products,
@@ -34,6 +36,15 @@ export function deleteProductSuccess(product) {
   };
 }
 
+export function addProduct(product) {
+  return {
+    type: actionTypes.ADD_PRODUCT,
+    payload: product,
+  };
+}
+
+
+
 export function getProductsApi(categoryId) {
   const configuration = {
     method: "get",
@@ -52,7 +63,9 @@ export function getProducts(categoryId) {
   return function (dispatch) {
     return getProductsApi(categoryId)
       .then((result) => {
-        dispatch(getProductsSuccess(result.data));
+        dispatch(getProductsSuccess(result.data))
+        dispatch(hideSpinner());
+        
       })
       .catch((error) => {
         throw error;

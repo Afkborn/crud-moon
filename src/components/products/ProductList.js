@@ -1,9 +1,15 @@
 import React from "react";
-import { Badge, Button, Container, Table } from "reactstrap";
+import { Badge, Button, Container, Table, Spinner } from "reactstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-function ProductList({ currentCategory, products, history, ...props }) {
+function ProductList({
+  currentCategory,
+  products,
+  spinner,
+  history,
+  ...props
+}) {
   function renderProduct(product) {
     return (
       <tr key={product._id}>
@@ -17,15 +23,19 @@ function ProductList({ currentCategory, products, history, ...props }) {
         <td>{product.price}</td>
         <td>{product.stock}</td>
         <td>{product.description}</td>
-        {/* <td>
-          <img
-            src="edit.svg"
-            style={{ height: 25, width: 25 }}
-            alt="edit"
-            onClick={() => editProduct(product)}
-            className="link-black"
-          />
-        </td> */}
+      </tr>
+    );
+  }
+  function renderProducts() {
+    return products.map((product) => renderProduct(product));
+  }
+  function renderEmpty() {
+    return (
+      <tr>
+        <td colSpan="4" className="text-center">
+          <h2>Ürün Bulunamadı</h2>
+          
+        </td>
       </tr>
     );
   }
@@ -53,18 +63,26 @@ function ProductList({ currentCategory, products, history, ...props }) {
       </Container>
 
       <div>
-        <Table>
-          <thead>
-            <tr>
-              <th>Ürün Adı</th>
-              <th>Fiyat</th>
-              <th>Stok</th>
-              <th>Açıklama</th>
-              {/* <th></th> */}
-            </tr>
-          </thead>
-          <tbody>{products.map((product) => renderProduct(product))}</tbody>
-        </Table>
+        {spinner && (
+          <div className="text-center">
+            <Spinner type="grow" color="danger" />
+          </div>
+        )}
+        {!spinner && (
+          <Table>
+            <thead>
+              <tr>
+                <th>Ürün Adı</th>
+                <th>Fiyat</th>
+                <th>Stok</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.length > 0 ? renderProducts() : renderEmpty()}
+            </tbody>
+          </Table>
+        )}
       </div>
     </div>
   );
@@ -74,6 +92,7 @@ function mapStateToProps(state) {
   return {
     currentCategory: state.categoryReducer,
     products: state.productListReducer,
+    spinner: state.spinnerReducer,
   };
 }
 const mapDispatchToProps = {};

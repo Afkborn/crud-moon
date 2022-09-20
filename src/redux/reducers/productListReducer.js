@@ -8,6 +8,9 @@ export default function productListReducer(
   switch (action.type) {
     case actionTypes.GET_PRODUCTS_SUCCESS:
       return action.payload;
+    case actionTypes.ADD_PRODUCT:
+      return [...state, { ...action.payload }];
+
     default:
       return state;
   }

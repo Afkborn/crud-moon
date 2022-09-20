@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { connect } from "react-redux";
-import { saveProduct, deleteProduct } from "../../redux/actions/productActions";
+import { saveProduct, deleteProduct, addProduct } from "../../redux/actions/productActions";
 import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
 import { getCategories } from "../../redux/actions/categoryActions";
 
@@ -25,11 +25,7 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-//TODO LİST
-// fotoğraf upload ederken ekle veya güncelle tuşuna basılmasın.
-// moon user ekranında picture görüntüleme işlemini yap
-// database için thumnbail eklemeyi bul, image upload edildiğinde aynı şekilde thumnbail oluştursun, oluşturulan thumnbaile /media/thumbnail/ şeklinde erişilebilsin
-// REST API doc güncelemesi yap
+// ürünleri reducer'da tut, yeni ürün eklendiğinde reducer'a da ekle.
 
 function Product({
   products,
@@ -81,13 +77,16 @@ function Product({
   //   return true;
   // }
 
-
+  // daha iyi bir yöntem var mı kontrol et
   function compareProduct() {
-    if (product.name === oldProduct.name &&
+    if (
+      product.name === oldProduct.name &&
       product.categoryId === oldProduct.categoryId &&
       product.price === oldProduct.price &&
       product.stock === oldProduct.stock &&
-      product.imageId === oldProduct.imageId) {
+      product.imageId === oldProduct.imageId &&
+      product.description === oldProduct.description
+    ) {
       return true;
     }
     return false;
@@ -105,8 +104,9 @@ function Product({
       return;
     }
 
-
     saveProduct(product).then(() => {
+      
+      addProduct(product);
       history.push("/");
     });
   }
@@ -118,7 +118,6 @@ function Product({
     showSpinner();
     const newMedia = new FormData();
     newMedia.append("image", file);
-    newMedia.append("imageType", "main");
     axios
       .post("/upload", newMedia, {
         headers: {
@@ -129,6 +128,7 @@ function Product({
         setProduct({ ...product, imageId: result.data._id });
         hideSpinner();
         setIsUploading(false);
+        setImg("/media/" + result.data._id + "?type=thumbnail");
       });
   };
 
@@ -143,6 +143,7 @@ function Product({
     toggle();
   }
   function handleChange(event) {
+    console.log(product);
     const { name, value } = event.target;
     setProduct((prevProduct) => ({
       ...prevProduct,
@@ -165,6 +166,22 @@ function Product({
           </div>
 
           <Form className="form" onSubmit={handleSubmit}>
+            <FormGroup>
+              <div className="text-center ">
+                {oldProduct.imageId ? (
+                  <FormGroup>
+                    <img
+                      src={"/media/" + oldProduct.imageId + "?type=thumbnail"}
+                      style={{ height: 200, width: 200 }}
+                      alt="edit"
+                      name="currentImg"
+                      id="currentImg"
+                      className="link-black "
+                    />
+                  </FormGroup>
+                ) : null}
+              </div>
+            </FormGroup>
             {product._id !== undefined ? (
               <FormGroup>
                 <Label for="id">Ürün ID</Label>
@@ -222,25 +239,12 @@ function Product({
                 onChange={handleChange}
               />
             </FormGroup>
-            {oldProduct.imageId ? (
-              <FormGroup>
-                <Label for="currentImg">Eski Resim:</Label>
-                <img
-                  src={"/media/main/" + oldProduct.imageId}
-                  style={{ height: 75, width: 75 }}
-                  alt="edit"
-                  name="currentImg"
-                  id="currentImg"
-                  className="link-black "
-                />
-              </FormGroup>
-            ) : null}
             <FormGroup>
               <Label for="exampleFile">Dosya</Label>
               <Input
                 type="file"
                 name="file"
-                accept=".png"
+                accept=".jpg, .jpeg, .png"
                 id="exampleFile"
                 onChange={onImageChange}
               />
@@ -254,17 +258,18 @@ function Product({
                   {spinner && <Spinner type="grow" color="danger" />}
                 </div>
               ) : (
-                <FormGroup>
-                  <Label for="currentImg">Yeni Resim:</Label>
-                  <img
-                    src={img}
-                    style={{ height: 75, width: 75 }}
-                    alt="edit"
-                    name="currentImg"
-                    id="currentImg"
-                    className="link-black "
-                  />
-                </FormGroup>
+                <div className="text-center " >
+                  <FormGroup>
+                    <img
+                      src={img}
+                      style={{ height: 200, width: 200 }}
+                      alt="edit"
+                      name="currentImg"
+                      id="currentImg"
+                      className="link-black "
+                    />
+                  </FormGroup>
+                </div>
               )
             ) : null}
             <FormGroup>
@@ -332,6 +337,7 @@ const mapDispatchToProps = {
   deleteProduct,
   showSpinner,
   hideSpinner,
+  addProduct,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);

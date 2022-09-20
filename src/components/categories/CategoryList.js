@@ -4,7 +4,7 @@ import { Badge } from "reactstrap";
 import { getCategories } from "../../redux/actions/categoryActions";
 import { changeCategory } from "../../redux/actions/categoryActions";
 import { connect } from "react-redux";
-
+import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
 import { getProducts } from "../../redux/actions/productActions";
 import { Link } from "react-router-dom";
 
@@ -15,15 +15,17 @@ function CategoryList({
   currentCategory,
   history,
   getProducts,
+  showSpinner,
+  hideSpinner,
   ...props
 }) {
   useEffect(() => {
     getCategories();
     getProducts();
-  }, [getCategories, getProducts]); // fıx warning
+  }, [getCategories, getProducts]);
 
   function selectCategory(category) {
-    console.log("category");
+    showSpinner();
     changeCategory(category);
     getProducts(category._id);
   }
@@ -83,6 +85,8 @@ const mapDispatchToProps = {
   getCategories,
   changeCategory,
   getProducts,
+  showSpinner,
+  hideSpinner,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoryList);

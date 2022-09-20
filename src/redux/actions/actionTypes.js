@@ -18,6 +18,10 @@ export const UPDATE_PRODUCT_SUCCESS = "UPDATE_PRODUCT_SUCCESS";
 export const DELETE_PRODUCT_SUCCESS = "DELETE_PRODUCT_SUCCESS";
 
 
+//productListActions
+export const ADD_PRODUCT = "ADD_PRODUCT";
+
+
 //userActions
 export const GET_USER_DETAILS_SUCCESS = "GET_USER_DETAILS_SUCCESS";
 
