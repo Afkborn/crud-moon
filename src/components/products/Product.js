@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 import { connect } from "react-redux";
-import { saveProduct, deleteProduct, addProduct } from "../../redux/actions/productActions";
+import {
+  saveProduct,
+  deleteProduct,
+  addProduct,
+} from "../../redux/actions/productActions";
 import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
 import { getCategories } from "../../redux/actions/categoryActions";
 
@@ -19,6 +23,7 @@ import {
   Spinner,
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
+import ThumbnailContainer from "../toolbox/ThumbnailContainer";
 import axios from "axios";
 import alertify from "alertifyjs";
 import Cookies from "universal-cookie";
@@ -41,7 +46,10 @@ function Product({
 }) {
   const [product, setProduct] = useState({ ...props.product });
   const [modal, setModal] = useState(false);
-  const [img, setImg] = useState();
+  const [showcaseImg, setShowcaseImg] = useState();
+  const [images, setImages] = useState([]);
+  const [imageSpinner, setImageSpinner] = useState(false);
+
   const oldProduct = { ...props.product };
   const [isUploading, setIsUploading] = useState(false);
 
@@ -51,32 +59,6 @@ function Product({
     }
   }, [props.product, getCategories, categories.length]);
 
-  // bootstrap required yeterli şimdilik.
-  // function validateForm() {
-  //   console.log(product)
-  //   if (product.name === undefined || product.name === "") {
-  //     alertify.error("Name is required");
-  //     return false;
-  //   }
-  //   if (product.categoryId === undefined || product.categoryId === "") {
-  //     alertify.error("Category is required");
-  //     return false;
-  //   }
-  //   if (product.price === undefined || product.price === "") {
-  //     alertify.error("Price is required");
-  //     return false;
-  //   }
-  //   if (product.stock === undefined || product.stock === "") {
-  //     alertify.error("Stock is required");
-  //     return false;
-  //   }
-  //   if (product.imageId === undefined || product.imageId === "") {
-  //     alertify.error("Image is required");
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   // daha iyi bir yöntem var mı kontrol et
   function compareProduct() {
     if (
@@ -84,7 +66,7 @@ function Product({
       product.categoryId === oldProduct.categoryId &&
       product.price === oldProduct.price &&
       product.stock === oldProduct.stock &&
-      product.imageId === oldProduct.imageId &&
+      product.showcaseImageId === oldProduct.showcaseImageId &&
       product.description === oldProduct.description
     ) {
       return true;
@@ -105,16 +87,15 @@ function Product({
     }
 
     saveProduct(product).then(() => {
-      
       addProduct(product);
       history.push("/");
     });
   }
 
-  const onImageChange = (e) => {
+  const showcaseOnImageChange = (e) => {
     setIsUploading(true);
     const [file] = e.target.files;
-    setImg(URL.createObjectURL(file));
+    setShowcaseImg(URL.createObjectURL(file));
     showSpinner();
     const newMedia = new FormData();
     newMedia.append("image", file);
@@ -125,12 +106,55 @@ function Product({
         },
       })
       .then((result) => {
-        setProduct({ ...product, imageId: result.data._id });
+        setProduct({ ...product, showcaseImageId: result.data._id });
         hideSpinner();
         setIsUploading(false);
-        setImg("/media/" + result.data._id + "?type=thumbnail");
       });
   };
+
+  const imageOnImageChange = (e) => {
+    setIsUploading(true);
+    setImageSpinner(true);
+    const [file] = e.target.files;
+    const newMedia = new FormData();
+    newMedia.append("image", file);
+    axios
+      .post("/upload", newMedia, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        setImages([
+          ...images,
+          { _id: result.data._id, file: URL.createObjectURL(file) },
+        ]);
+        // setProduct({ ...product, imageIds: [...product.imageIds, result.data._id] }); 
+        //fıx setProduct
+        setProduct({
+          ...product,
+          imageIds: [...product.imageIds, result.data._id],
+        });
+        setIsUploading(false);
+        setImageSpinner(false);
+      });
+  };
+
+  function deleteImage(image) {
+    setImages(images.filter((img) => img._id !== image._id));
+    //fıx setProduct
+    // setProduct({
+    //   ...product,
+    //   imageIds: product.imageIds.filter((id) => id !== image._id),
+    // });
+    axios
+      .delete(`/media/${image._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {});
+  }
 
   function toggle() {
     setModal(!modal);
@@ -142,6 +166,7 @@ function Product({
     });
     toggle();
   }
+
   function handleChange(event) {
     console.log(product);
     const { name, value } = event.target;
@@ -168,10 +193,14 @@ function Product({
           <Form className="form" onSubmit={handleSubmit}>
             <FormGroup>
               <div className="text-center ">
-                {oldProduct.imageId ? (
+                {oldProduct.showcaseImageId ? (
                   <FormGroup>
                     <img
-                      src={"/media/" + oldProduct.imageId + "?type=thumbnail"}
+                      src={
+                        "/media/" +
+                        oldProduct.showcaseImageId +
+                        "?type=thumbnail"
+                      }
                       style={{ height: 200, width: 200 }}
                       alt="edit"
                       name="currentImg"
@@ -240,28 +269,28 @@ function Product({
               />
             </FormGroup>
             <FormGroup>
-              <Label for="exampleFile">Dosya</Label>
+              <Label for="showcasePhoto">Vitrin Fotoğrafı</Label>
               <Input
                 type="file"
                 name="file"
                 accept=".jpg, .jpeg, .png"
-                id="exampleFile"
-                onChange={onImageChange}
+                id="showcasePhoto"
+                onChange={showcaseOnImageChange}
               />
               <FormText color="muted">
-                Resim yüklemek için lütfen dosya seçiniz. (max 2MB, PNG)
+                Vitrin fotoğrafı için lütfen dosya seçiniz.
               </FormText>
             </FormGroup>
-            {img ? (
+            {showcaseImg ? (
               spinner ? (
                 <div className="text-center">
                   {spinner && <Spinner type="grow" color="danger" />}
                 </div>
               ) : (
-                <div className="text-center " >
+                <div className="text-center ">
                   <FormGroup>
                     <img
-                      src={img}
+                      src={showcaseImg}
                       style={{ height: 200, width: 200 }}
                       alt="edit"
                       name="currentImg"
@@ -281,6 +310,24 @@ function Product({
                 value={product.description}
                 onChange={handleChange}
                 required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="showcasePhoto">Galeri</Label>
+              <Input
+                type="file"
+                name="file"
+                accept=".jpg, .jpeg, .png"
+                id="showcasePhoto"
+                onChange={imageOnImageChange}
+              />
+              <FormText color="muted">
+                Diğer fotoğrafları eklemek için burayı kullanalım
+              </FormText>
+              <ThumbnailContainer
+                images={images}
+                spinner={imageSpinner}
+                deleteImage={deleteImage}
               />
             </FormGroup>
             <Button type="submit" color="warning">
