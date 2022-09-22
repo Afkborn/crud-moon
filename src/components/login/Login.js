@@ -49,6 +49,7 @@ function Login({ spinner, showSpinner, hideSpinner, history, ...props }) {
         setLogin(true);
         cookies.set("TOKEN", result.data.token, {
           path: "/",
+          expires: new Date(Date.now() + 2592000),
         });
         hideSpinner();
         window.location.href = "/";
