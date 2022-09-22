@@ -33,8 +33,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-// ürünleri reducer'da tut, yeni ürün eklendiğinde reducer'a da ekle.
-
 function Product({
   products,
   categories,
@@ -52,12 +50,12 @@ function Product({
   const [modalAddStock, setModalAddStock] = useState(false);
   const [showcaseImg, setShowcaseImg] = useState();
   const [images, setImages] = useState([]);
+
   const [imageSpinner, setImageSpinner] = useState(false);
   const [imageCount, setImageCount] = useState(0);
   const oldProduct = { ...props.product };
   const [isUploading, setIsUploading] = useState(false);
-
-  console.log("product", product);
+  const [stockList, setStockList] = useState([]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -89,12 +87,10 @@ function Product({
       alertify.notify("Değişiklik yapılmadı", "warning", 5);
       return;
     }
-
     saveProduct(product).then(() => {
       addProduct(product);
       history.push("/");
     });
-    console.log(product);
   }
 
   const showcaseOnImageChange = (e) => {
@@ -177,7 +173,6 @@ function Product({
   }
 
   const handleChangeComplete = (color, event) => {
-    console.log(color.hex);
     setProduct({ ...product, color: color.hex });
   };
 
@@ -190,9 +185,11 @@ function Product({
   }
 
   function handleAddStock(size, count) {
-    console.log(size, count);
-    // product a eklemenin yolunu bul
+    setStockList([...stockList, { size, count }]);
+    toggleAddStock();
+    //TODO FIX THIS
   }
+
 
   return (
     <div className="mt-4">
@@ -209,6 +206,7 @@ function Product({
           </div>
 
           <Form className="form" onSubmit={handleSubmit}>
+            {/* oldProduct showcaseImageId */}
             <FormGroup>
               <div className="text-center ">
                 {oldProduct.showcaseImageId ? (
@@ -229,6 +227,7 @@ function Product({
                 ) : null}
               </div>
             </FormGroup>
+            {/* product id */}
             {product._id !== undefined ? (
               <FormGroup>
                 <Label for="id">Ürün ID</Label>
@@ -241,6 +240,7 @@ function Product({
                 />
               </FormGroup>
             ) : null}
+            {/* product name */}
             <FormGroup>
               <Label for="name">Ürün İsmi</Label>
               <Input
@@ -252,6 +252,7 @@ function Product({
                 required
               />
             </FormGroup>
+            {/* product category */}
             <SelectInput
               name="categoryId"
               label="Kategori"
@@ -264,6 +265,7 @@ function Product({
               }))}
               onChange={handleChange}
             />
+            {/* product gender */}
             <FormGroup tag="fieldset" onChange={handleChange}>
               <Label>Cinsiyet</Label>
               <FormGroup check>
@@ -282,6 +284,7 @@ function Product({
                 </Label>
               </FormGroup>
             </FormGroup>
+            {/* product price */}
             <FormGroup>
               <Label for="price">Fiyat</Label>
               <Input
@@ -293,33 +296,38 @@ function Product({
                 onChange={handleChange}
               />
             </FormGroup>
+            {/* product stock */}
             <FormGroup>
               <Label> Stok Bilgisi </Label>{" "}
               <Button onClick={() => toggleAddStock()}>Stok Ekle</Button>
-              <ListGroup>
-                {/* {stockList.map((stock) => (
-                  <ListGroupItem key={stock.size}>
-                    <Row>
-                      <Col xs="6">
-                        <span> Size: {stock.size}</span>
-                      </Col>
-                      <Col xs="3">
-                        <span> Count: {stock.count} </span>
-                      </Col>
-                      <Col xs="3">
-                        <span className="to-right clickable link-black">X</span>
-                      </Col>
-                    </Row>
-                  </ListGroupItem>
-                ))} */}
-                <ListGroupItem>Test</ListGroupItem>
-              </ListGroup>
+              {stockList.length > 0 ? (
+                <ListGroup>
+                  {stockList.map((stock) => (
+                    <ListGroupItem key={stock.size}>
+                      <Row>
+                        <Col xs="6">
+                          <span> Size: {stock.size}</span>
+                        </Col>
+                        <Col xs="3">
+                          <span> Count: {stock.count} </span>
+                        </Col>
+                        <Col xs="3">
+                          <span className="to-right clickable link-black">
+                            X
+                          </span>
+                        </Col>
+                      </Row>
+                    </ListGroupItem>
+                  ))}
+                </ListGroup>
+              ) : null}
               <AddStockPopUp
                 modal={modalAddStock}
                 toggle={toggleAddStock}
                 handleAddStock={handleAddStock}
               />
             </FormGroup>
+            {/* product showcasePhoto */}
             <FormGroup>
               <Label for="showcasePhoto">Vitrin Fotoğrafı</Label>
               <Input
@@ -353,6 +361,7 @@ function Product({
                 </div>
               )
             ) : null}
+            {/* product color */}
             <FormGroup>
               <h4>Ürün Rengi</h4>
               <div>
@@ -366,12 +375,14 @@ function Product({
                     }}
                   ></div>
                 ) : null}
-                <TwitterPicker
-                  className=""
-                  onChangeComplete={handleChangeComplete}
-                ></TwitterPicker>
+                <div className="text-center">
+                  <TwitterPicker
+                    onChangeComplete={handleChangeComplete}
+                  ></TwitterPicker>
+                </div>
               </div>
             </FormGroup>
+            {/* product description */}
             <FormGroup>
               <Label for="description">Açıklama</Label>
               <Input
@@ -383,6 +394,7 @@ function Product({
                 required
               />
             </FormGroup>
+            {/* product images */}
             <FormGroup>
               <Label for="showcasePhoto">Galeri</Label>
               <Input
