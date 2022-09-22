@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Container, Row, Card, Spinner, Button } from "reactstrap";
+import { Col, Container, Row, Card, Spinner } from "reactstrap";
 
 const ThumbnailContainer = ({ images, spinner, deleteImage }) => {
   return (
