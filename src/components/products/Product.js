@@ -8,7 +8,7 @@ import {
 } from "../../redux/actions/productActions";
 import { showSpinner, hideSpinner } from "../../redux/actions/spinnerActions";
 import { getCategories } from "../../redux/actions/categoryActions";
-
+import AddStockPopUp from "../toolbox/AddStockPopUp";
 import DeletePopUp from "../toolbox/DeletePopUp";
 import {
   Row,
@@ -21,9 +21,12 @@ import {
   Badge,
   FormText,
   Spinner,
+  ListGroup,
+  ListGroupItem,
 } from "reactstrap";
 import SelectInput from "../toolbox/SelectInput";
 import ThumbnailContainer from "../toolbox/ThumbnailContainer";
+import { TwitterPicker } from "react-color";
 import axios from "axios";
 import alertify from "alertifyjs";
 import Cookies from "universal-cookie";
@@ -45,14 +48,16 @@ function Product({
   ...props
 }) {
   const [product, setProduct] = useState({ ...props.product });
-  console.log(product);
   const [modal, setModal] = useState(false);
+  const [modalAddStock, setModalAddStock] = useState(false);
   const [showcaseImg, setShowcaseImg] = useState();
   const [images, setImages] = useState([]);
   const [imageSpinner, setImageSpinner] = useState(false);
   const [imageCount, setImageCount] = useState(0);
   const oldProduct = { ...props.product };
   const [isUploading, setIsUploading] = useState(false);
+
+  console.log("product", product);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -66,7 +71,6 @@ function Product({
       product.name === oldProduct.name &&
       product.categoryId === oldProduct.categoryId &&
       product.price === oldProduct.price &&
-      product.stock === oldProduct.stock &&
       product.showcaseImageId === oldProduct.showcaseImageId &&
       product.description === oldProduct.description
     ) {
@@ -77,7 +81,6 @@ function Product({
 
   function handleSubmit(event) {
     event.preventDefault();
-    // if (!validateForm()) return;
     if (isUploading) {
       alertify.notify("Fotoğraf yükleniyor, lütfen bekleyin", "warning", 5);
       return;
@@ -91,6 +94,7 @@ function Product({
       addProduct(product);
       history.push("/");
     });
+    console.log(product);
   }
 
   const showcaseOnImageChange = (e) => {
@@ -161,6 +165,10 @@ function Product({
     setModal(!modal);
   }
 
+  function toggleAddStock() {
+    setModalAddStock(!modalAddStock);
+  }
+
   function handleDelete() {
     deleteProduct(product).then(() => {
       history.push("/");
@@ -168,13 +176,22 @@ function Product({
     toggle();
   }
 
+  const handleChangeComplete = (color, event) => {
+    console.log(color.hex);
+    setProduct({ ...product, color: color.hex });
+  };
+
   function handleChange(event) {
-    console.log(product);
     const { name, value } = event.target;
     setProduct((prevProduct) => ({
       ...prevProduct,
       [name]: value,
     }));
+  }
+
+  function handleAddStock(size, count) {
+    console.log(size, count);
+    // product a eklemenin yolunu bul
   }
 
   return (
@@ -247,6 +264,24 @@ function Product({
               }))}
               onChange={handleChange}
             />
+            <FormGroup tag="fieldset" onChange={handleChange}>
+              <Label>Cinsiyet</Label>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="gender" value="men" /> Erkek
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="gender" value="woman" /> Kadın
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="gender" value="unisex" /> Unisex
+                </Label>
+              </FormGroup>
+            </FormGroup>
             <FormGroup>
               <Label for="price">Fiyat</Label>
               <Input
@@ -259,14 +294,30 @@ function Product({
               />
             </FormGroup>
             <FormGroup>
-              <Label for="stock">Stok</Label>
-              <Input
-                type="number"
-                name="stock"
-                id="stock"
-                required
-                value={product.stock}
-                onChange={handleChange}
+              <Label> Stok Bilgisi </Label>{" "}
+              <Button onClick={() => toggleAddStock()}>Stok Ekle</Button>
+              <ListGroup>
+                {/* {stockList.map((stock) => (
+                  <ListGroupItem key={stock.size}>
+                    <Row>
+                      <Col xs="6">
+                        <span> Size: {stock.size}</span>
+                      </Col>
+                      <Col xs="3">
+                        <span> Count: {stock.count} </span>
+                      </Col>
+                      <Col xs="3">
+                        <span className="to-right clickable link-black">X</span>
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                ))} */}
+                <ListGroupItem>Test</ListGroupItem>
+              </ListGroup>
+              <AddStockPopUp
+                modal={modalAddStock}
+                toggle={toggleAddStock}
+                handleAddStock={handleAddStock}
               />
             </FormGroup>
             <FormGroup>
@@ -302,6 +353,25 @@ function Product({
                 </div>
               )
             ) : null}
+            <FormGroup>
+              <h4>Ürün Rengi</h4>
+              <div>
+                {product.color ? (
+                  <div
+                    className="corner-radius smooth"
+                    style={{
+                      height: "50px",
+                      width: "100%",
+                      backgroundColor: product.color,
+                    }}
+                  ></div>
+                ) : null}
+                <TwitterPicker
+                  className=""
+                  onChangeComplete={handleChangeComplete}
+                ></TwitterPicker>
+              </div>
+            </FormGroup>
             <FormGroup>
               <Label for="description">Açıklama</Label>
               <Input
