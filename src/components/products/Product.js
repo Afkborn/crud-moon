@@ -45,11 +45,12 @@ function Product({
   ...props
 }) {
   const [product, setProduct] = useState({ ...props.product });
+  console.log(product);
   const [modal, setModal] = useState(false);
   const [showcaseImg, setShowcaseImg] = useState();
   const [images, setImages] = useState([]);
   const [imageSpinner, setImageSpinner] = useState(false);
-
+  const [imageCount, setImageCount] = useState(0);
   const oldProduct = { ...props.product };
   const [isUploading, setIsUploading] = useState(false);
 
@@ -113,6 +114,10 @@ function Product({
   };
 
   const imageOnImageChange = (e) => {
+    if (imageCount === 5) {
+      alertify.notify("En fazla 5 fotoğraf yükleyebilirsiniz", "warning", 5);
+      return;
+    }
     setIsUploading(true);
     setImageSpinner(true);
     const [file] = e.target.files;
@@ -127,26 +132,22 @@ function Product({
       .then((result) => {
         setImages([
           ...images,
-          { _id: result.data._id, file: URL.createObjectURL(file) },
+          { _id: result.data._id, file: URL.createObjectURL(file), imageCount },
         ]);
-        // setProduct({ ...product, imageIds: [...product.imageIds, result.data._id] }); 
-        //fıx setProduct
         setProduct({
           ...product,
           imageIds: [...product.imageIds, result.data._id],
         });
         setIsUploading(false);
         setImageSpinner(false);
+        setImageCount(imageCount + 1);
       });
   };
 
   function deleteImage(image) {
     setImages(images.filter((img) => img._id !== image._id));
-    //fıx setProduct
-    // setProduct({
-    //   ...product,
-    //   imageIds: product.imageIds.filter((id) => id !== image._id),
-    // });
+    const newImageIds = product.imageIds.filter((id) => id !== image._id);
+    setProduct({ ...product, imageIds: newImageIds });
     axios
       .delete(`/media/${image._id}`, {
         headers: {

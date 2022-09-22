@@ -1,35 +1,27 @@
 import React from "react";
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardBody,
-  CardTitle,
-  Spinner,
-} from "reactstrap";
+import { Col, Container, Row, Card, Spinner, Button } from "reactstrap";
 
 const ThumbnailContainer = ({ images, spinner, deleteImage }) => {
   return (
     <Container>
       <Row>
         {images.map((image) => (
-          <Col
-            xl={4}
-            lg={6}
-            md={6}
-            sm={12}
-            xs={12}
-            key={image._id}
-            className=""
-          >
-            <Card outline color="light" className="">
-              <span onClick={() => deleteImage(image)} className=" clickable big-span link-black">
+          <Col xl={4} lg={6} md={6} sm={12} xs={12} key={image._id}>
+            <Card outline color="light" className="card-thumbnail mt-2">
+              <span
+                onClick={() => deleteImage(image)}
+                className=" span-right clickable  link-black"
+              >
                 X
               </span>
+
+              {/* <div className="div-left">
+                <span>{image.imageCount}</span>{" "}
+              </div> */}
+
               <img
                 src={image.file}
-                style={{ height: 200, width: 200 }}
+                style={{ width: "100%" }}
                 alt="edit"
                 name="currentImg"
                 id="currentImg"

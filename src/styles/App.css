@@ -120,13 +120,22 @@
 }
 
 
-.big-span{
+
+
+
+.span-right{
     font-size: 1.6em;
-    /* font-weight: 600; */
+    position: absolute;
+    right: 10px;
 }
 
-
+.div-left{
+    font-size: 1.6em;
+    position: absolute;
+    left: 10px;
+}
 
 .clickable{
     cursor: pointer;
 }
+
