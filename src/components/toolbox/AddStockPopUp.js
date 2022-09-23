@@ -14,12 +14,39 @@ import {
 const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
   const [size, setSize] = React.useState("");
   const [count, setCount] = React.useState(0);
-
+  const [error, setError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   function handleAdd() {
-    handleAddStock({ size, count:parseInt(count) });
+    if (size && count) {
+      handleAddStock({size, count});
+      setSize("");
+      setCount(0);
+      toggle();
+    } else {
+      setError(true);
+      setErrorMessage("Please fill all fields");
+    }
+  }
+
+  function handleClose(){
+    setError(false);
+    setErrorMessage("");
     setSize("");
     setCount(0);
     toggle();
+  }
+
+  function handleChange(event) {
+    setError(false);
+    setErrorMessage("");
+    const { name, value } = event.target;
+    if (name === "size") {
+      setSize(value);
+    }
+    if (name === "count") {
+      setCount(value);
+    }
+
   }
   return (
     <Modal isOpen={modal} toggle={toggle}>
@@ -33,7 +60,7 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
             id="size"
             required
             value={size}
-            onChange={(e) => setSize(e.target.value)}
+            onChange={handleChange}
           />
         </FormGroup>
         <FormGroup>
@@ -44,9 +71,11 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
             id="count"
             required
             value={count}
-            onChange={(e) => setCount(e.target.value)}
+            onChange={handleChange}
+            min={0}
           />
         </FormGroup>
+        {error && <p style={{ color: "red" }}>{errorMessage}</p>}
       </ModalBody>
       <ModalFooter>
         <Button
@@ -57,7 +86,7 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
         >
           Ekle
         </Button>{" "}
-        <Button color="secondary" onClick={toggle}>
+        <Button color="secondary" onClick={() => {handleClose();}}>
           Vazgeç
         </Button>
       </ModalFooter>
