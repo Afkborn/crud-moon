@@ -56,6 +56,8 @@ function Product({
   const oldProduct = { ...props.product };
   const [isUploading, setIsUploading] = useState(false);
   const [stockList, setStockList] = useState([]);
+  const [stockCount, setStockCount] = useState(0);
+  const [stockAvaible, setStockAvaible] = useState(false);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -87,6 +89,23 @@ function Product({
       alertify.notify("Değişiklik yapılmadı", "warning", 5);
       return;
     }
+    if (product.gender === "") {
+      alertify.notify("Cinsiyet seçilmeli", "warning", 5);
+      return;
+    }
+    if (stockList.length === 0) {
+      alertify.notify("Stok eklenmeli", "warning", 5);
+      return;
+    }
+    if (product.color === "") {
+      alertify.notify("Renk seçilmeli", "warning", 5);
+      return;
+    }
+    if (product.showcaseImageId === "") {
+      alertify.notify("Vitrin fotoğrafı seçilmeli", "warning", 5);
+      return;
+    }
+
     saveProduct(product).then(() => {
       addProduct(product);
       history.push("/");
@@ -130,14 +149,15 @@ function Product({
         },
       })
       .then((result) => {
-        setImages([
+        setImages((images) => [
           ...images,
           { _id: result.data._id, file: URL.createObjectURL(file), imageCount },
         ]);
-        setProduct({
+        setProduct((product) => ({
           ...product,
           imageIds: [...product.imageIds, result.data._id],
-        });
+        }));
+
         setIsUploading(false);
         setImageSpinner(false);
         setImageCount(imageCount + 1);
@@ -184,13 +204,19 @@ function Product({
     }));
   }
 
-  function handleAddStock(size, count) {
-    setStockList([...stockList, { size, count }]);
-    toggleAddStock();
-    //TODO FIX THIS
+  function handleAddStock(stock) {
+    setStockList((prevStockList) => [...prevStockList, stock]);
+    setStockCount((prevStockCount) => prevStockCount + stock.count);
+    if (stock.count > 0) {
+      setStockAvaible(true);
+    }
+    setProduct((prev) => ({
+      ...prev,
+      stockList: [...prev.stockList, stock],
+      inStock: stockAvaible,
+      totalStock: stockCount,
+    }));
   }
-
-
   return (
     <div className="mt-4">
       <Row>
@@ -452,7 +478,20 @@ function mapStateToProps(state, ownProps) {
   const product =
     productId && state.productListReducer.length > 0
       ? getProductById(state.productListReducer, productId)
-      : {};
+      : {
+          categoryId: "",
+          name: "",
+          price: "",
+          description: "",
+          totalStock: 0,
+          inStock: false,
+          color: "",
+          gender: "",
+          showcaseImageId: "",
+          imageIds: [],
+          stockList: [],
+        };
+  // Eğer product var ise ekliyor fakat yoksa boş bir obje dönmek value'larda hataya sebebiyet veriyor, çözümü bulana kadar geçici kalsın.
   return {
     product,
     products: state.productListReducer,

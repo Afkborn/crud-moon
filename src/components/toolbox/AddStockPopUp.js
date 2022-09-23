@@ -15,6 +15,12 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
   const [size, setSize] = React.useState("");
   const [count, setCount] = React.useState(0);
 
+  function handleAdd() {
+    handleAddStock({ size, count:parseInt(count) });
+    setSize("");
+    setCount(0);
+    toggle();
+  }
   return (
     <Modal isOpen={modal} toggle={toggle}>
       <ModalHeader toggle={toggle}>Stok Ekle</ModalHeader>
@@ -46,7 +52,7 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
         <Button
           color="success"
           onClick={() => {
-            handleAddStock(size, count);
+            handleAdd();
           }}
         >
           Ekle
