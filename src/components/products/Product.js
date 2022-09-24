@@ -228,6 +228,10 @@ function Product({
   }
 
   function handleAddStock(stock) {
+    if (stockList.find((s) => s.size === stock.size)) {
+      alertify.notify("Bu beden için stok zaten var", "warning", 5);
+      return;
+    }
     setStockList((prevStockList) => [...prevStockList, stock]);
     setStockCount((prevStockCount) => prevStockCount + stock.count);
     setStockAvaible(stock.count > 0);
