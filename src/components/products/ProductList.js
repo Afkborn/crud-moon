@@ -21,7 +21,7 @@ function ProductList({
           </Link>{" "}
         </td>
         <td>{product.price}</td>
-        <td>{product.stock}</td>
+        <td> {product.inStock===true ? (<Badge color="success">{product.totalStock}</Badge>) : (<Badge color="danger">0</Badge>)} </td>
         <td>{product.description}</td>
       </tr>
     );

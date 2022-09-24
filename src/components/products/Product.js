@@ -223,8 +223,6 @@ function Product({
       ...prevProduct,
       [name]: value,
     }));
-    
-
   }
 
   function handleAddStock(stock) {
@@ -233,25 +231,32 @@ function Product({
       return;
     }
     setStockList((prevStockList) => [...prevStockList, stock]);
-    setStockCount((prevStockCount) => prevStockCount + stock.count);
-    setStockAvaible(stock.count > 0);
+
+    //list gibi verilerde prev kullanarka anlık güncelleyebiliyorum fakat bunu çözemedim araştır.
+    const newStockCount = stockCount + stock.count;
+    setStockCount(newStockCount);
+    const stockIsAvaible = newStockCount > 0;
+    setStockAvaible(stockIsAvaible);
+
     setProduct((prev) => ({
       ...prev,
       stockList: [...prev.stockList, stock],
-      inStock: stockAvaible,
-      totalStock: stockCount,
+      inStock: stockIsAvaible,
+      totalStock: newStockCount,
     }));
   }
 
   function handleStockDelete(stock) {
     setStockList((prev) => prev.filter((s) => s.size !== stock.size));
-    setStockCount(stockCount - stock.count);
-    setStockAvaible(stockCount - stock.count > 0);
+    const newStockCount = stockCount - stock.count;
+    setStockCount(newStockCount);
+    const stockIsAvaible = newStockCount > 0;
+    setStockAvaible(stockIsAvaible);
     setProduct((prev) => ({
       ...prev,
       stockList: prev.stockList.filter((s) => s.size !== stock.size),
-      inStock: stockAvaible,
-      totalStock: stockCount,
+      inStock: stockIsAvaible,
+      totalStock: newStockCount,
     }));
   }
 

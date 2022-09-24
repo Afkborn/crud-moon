@@ -44,7 +44,8 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
       setSize(value);
     }
     if (name === "count") {
-      setCount(value);
+
+      setCount(parseInt(value));
     }
   }
   return (
