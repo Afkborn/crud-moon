@@ -43,6 +43,7 @@ function Product({
   showSpinner,
   hideSpinner,
   history,
+  productImages,
   ...props
 }) {
   const [product, setProduct] = useState({ ...props.product });
@@ -50,7 +51,6 @@ function Product({
   const [modalAddStock, setModalAddStock] = useState(false);
   const [showcaseImg, setShowcaseImg] = useState();
   const [images, setImages] = useState([]);
-
   const [imageSpinner, setImageSpinner] = useState(false);
   const [imageCount, setImageCount] = useState(0);
   const oldProduct = { ...props.product };
@@ -58,12 +58,27 @@ function Product({
   const [stockList, setStockList] = useState([]);
   const [stockCount, setStockCount] = useState(0);
   const [stockAvaible, setStockAvaible] = useState(false);
-
   useEffect(() => {
     if (categories.length === 0) {
       getCategories();
     }
-  }, [props.product, getCategories, categories.length]);
+    if (product.imageIds.length > 0 && images.length === 0) {
+      setImages(productImages);
+    }
+    if (stockList.length === 0) {
+      setStockList(props.product.stockList);
+      setStockCount(props.product.totalStock);
+      setStockAvaible(props.product.inStock);
+    }
+  }, [
+    props,
+    getCategories,
+    categories.length,
+    images.length,
+    product.imageIds.length,
+    productImages,
+    stockList.length,
+  ]);
 
   // daha iyi bir yöntem var mı kontrol et
   function compareProduct() {
@@ -72,7 +87,13 @@ function Product({
       product.categoryId === oldProduct.categoryId &&
       product.price === oldProduct.price &&
       product.showcaseImageId === oldProduct.showcaseImageId &&
-      product.description === oldProduct.description
+      product.description === oldProduct.description &&
+      product.imageIds === oldProduct.imageIds &&
+      product.color === oldProduct.color &&
+      product.gender === oldProduct.gender &&
+      product.totalStock === oldProduct.totalStock &&
+      product.inStock === oldProduct.inStock &&
+      product.stockList === oldProduct.stockList
     ) {
       return true;
     }
@@ -202,14 +223,14 @@ function Product({
       ...prevProduct,
       [name]: value,
     }));
+    
+
   }
 
   function handleAddStock(stock) {
     setStockList((prevStockList) => [...prevStockList, stock]);
     setStockCount((prevStockCount) => prevStockCount + stock.count);
-    if (stock.count > 0) {
-      setStockAvaible(true);
-    }
+    setStockAvaible(stock.count > 0);
     setProduct((prev) => ({
       ...prev,
       stockList: [...prev.stockList, stock],
@@ -217,6 +238,19 @@ function Product({
       totalStock: stockCount,
     }));
   }
+
+  function handleStockDelete(stock) {
+    setStockList((prev) => prev.filter((s) => s.size !== stock.size));
+    setStockCount(stockCount - stock.count);
+    setStockAvaible(stockCount - stock.count > 0);
+    setProduct((prev) => ({
+      ...prev,
+      stockList: prev.stockList.filter((s) => s.size !== stock.size),
+      inStock: stockAvaible,
+      totalStock: stockCount,
+    }));
+  }
+
   return (
     <div className="mt-4">
       <Row>
@@ -292,21 +326,42 @@ function Product({
               onChange={handleChange}
             />
             {/* product gender */}
-            <FormGroup tag="fieldset" onChange={handleChange}>
+            <FormGroup tag="fieldset">
               <Label>Cinsiyet</Label>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="gender" value="men" /> Erkek
+                  <Input
+                    type="radio"
+                    name="gender"
+                    value="men"
+                    onChange={handleChange}
+                    checked={product.gender === "men"}
+                  />{" "}
+                  Erkek
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="gender" value="woman" /> Kadın
+                  <Input
+                    type="radio"
+                    name="gender"
+                    value="woman"
+                    onChange={handleChange}
+                    checked={product.gender === "woman"}
+                  />{" "}
+                  Kadın
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="gender" value="unisex" /> Unisex
+                  <Input
+                    type="radio"
+                    name="gender"
+                    value="unisex"
+                    onChange={handleChange}
+                    checked={product.gender === "unisex"}
+                  />{" "}
+                  Unisex
                 </Label>
               </FormGroup>
             </FormGroup>
@@ -338,7 +393,10 @@ function Product({
                           <span> Count: {stock.count} </span>
                         </Col>
                         <Col xs="3">
-                          <span className="to-right clickable link-black">
+                          <span
+                            className="to-right clickable link-black"
+                            onClick={() => handleStockDelete(stock)}
+                          >
                             X
                           </span>
                         </Col>
@@ -433,6 +491,7 @@ function Product({
               <FormText color="muted">
                 Diğer fotoğrafları eklemek için burayı kullanalım
               </FormText>
+
               <ThumbnailContainer
                 images={images}
                 spinner={imageSpinner}
@@ -464,7 +523,18 @@ function Product({
 export function getProductById(products, productId) {
   return products.find((product) => product._id === productId) || null;
 }
-
+export function setImages(product) {
+  const newImages = [];
+  if (product._id !== undefined) {
+    product.imageIds.forEach((imageId) => {
+      newImages.push({
+        _id: imageId,
+        file: `/media/${imageId}?type=thumbnail`,
+      });
+    });
+  }
+  return newImages;
+}
 export function getProductAPIById(productId) {
   return fetch(`http://localhost:3000/products/${productId}`)
     .then((response) => response.json())
@@ -491,9 +561,12 @@ function mapStateToProps(state, ownProps) {
           imageIds: [],
           stockList: [],
         };
+  const images =
+    productId && state.productListReducer.length > 0 ? setImages(product) : [];
   // Eğer product var ise ekliyor fakat yoksa boş bir obje dönmek value'larda hataya sebebiyet veriyor, çözümü bulana kadar geçici kalsın.
   return {
     product,
+    productImages: images,
     products: state.productListReducer,
     categories: state.categoryListReducer,
     spinner: state.spinnerReducer,

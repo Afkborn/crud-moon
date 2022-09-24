@@ -18,7 +18,7 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
   const [errorMessage, setErrorMessage] = React.useState("");
   function handleAdd() {
     if (size && count) {
-      handleAddStock({size, count});
+      handleAddStock({ size, count });
       setSize("");
       setCount(0);
       toggle();
@@ -28,7 +28,7 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
     }
   }
 
-  function handleClose(){
+  function handleClose() {
     setError(false);
     setErrorMessage("");
     setSize("");
@@ -46,7 +46,6 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
     if (name === "count") {
       setCount(value);
     }
-
   }
   return (
     <Modal isOpen={modal} toggle={toggle}>
@@ -86,7 +85,12 @@ const AddStockPopUp = ({ modal, toggle, handleAddStock }) => {
         >
           Ekle
         </Button>{" "}
-        <Button color="secondary" onClick={() => {handleClose();}}>
+        <Button
+          color="secondary"
+          onClick={() => {
+            handleClose();
+          }}
+        >
           Vazgeç
         </Button>
       </ModalFooter>

@@ -14,11 +14,6 @@ const ThumbnailContainer = ({ images, spinner, deleteImage }) => {
               >
                 X
               </span>
-
-              {/* <div className="div-left">
-                <span>{image.imageCount}</span>{" "}
-              </div> */}
-
               <img
                 src={image.file}
                 style={{ width: "100%" }}
