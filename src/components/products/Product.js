@@ -33,6 +33,12 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
+
+//TODO LIST
+// productList ve categoryList reducerlarında güncelleme olduğunda yansıt
+// değişikliği sunucuya gönder response 200 ise reducerdan değişiklik yap
+// her seferonde product list, category list ve product listi çekmek yerine reducerdan çek
+
 function Product({
   products,
   categories,
@@ -57,7 +63,7 @@ function Product({
   const [isUploading, setIsUploading] = useState(false);
   const [stockList, setStockList] = useState([]);
   const [stockCount, setStockCount] = useState(0);
-  const [stockAvaible, setStockAvaible] = useState(false);
+
   useEffect(() => {
     if (categories.length === 0) {
       getCategories();
@@ -68,7 +74,7 @@ function Product({
     if (stockList.length === 0) {
       setStockList(props.product.stockList);
       setStockCount(props.product.totalStock);
-      setStockAvaible(props.product.inStock);
+
     }
   }, [
     props,
@@ -236,7 +242,7 @@ function Product({
     const newStockCount = stockCount + stock.count;
     setStockCount(newStockCount);
     const stockIsAvaible = newStockCount > 0;
-    setStockAvaible(stockIsAvaible);
+
 
     setProduct((prev) => ({
       ...prev,
@@ -251,7 +257,7 @@ function Product({
     const newStockCount = stockCount - stock.count;
     setStockCount(newStockCount);
     const stockIsAvaible = newStockCount > 0;
-    setStockAvaible(stockIsAvaible);
+
     setProduct((prev) => ({
       ...prev,
       stockList: prev.stockList.filter((s) => s.size !== stock.size),
